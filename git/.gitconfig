@@ -1,0 +1,23 @@
+[core]
+    editor = nvim
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    features = dracula
+    dark = true
+    navigate = true
+    hyperlinks = true
+    hyperlinks-file-link-format = "idea://open?file={path}&line={line}"
+    line-numbers = true
+
+[delta "dracula"]
+    syntax-theme = Dracula
+    plus-style = "syntax #003800"
+    minus-style = "syntax #3f0001"
+    plus-emph-style = "syntax #007000"
+    minus-emph-style = "syntax #700000"
+    plus-non-emph-style = "syntax #003800"
+    minus-non-emph-style = "syntax #3f0001"
