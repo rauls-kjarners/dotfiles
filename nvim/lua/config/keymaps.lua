@@ -11,7 +11,7 @@ map({'n', 'v', 'o'}, 'l', 'k', { desc = 'Move Up' })
 map({'n', 'v', 'o'}, ';', 'l', { desc = 'Move Right' })
 
 -- Re-map repeat search
-map({'n', 'v', 'o'}, '''', ';', { desc = 'Repeat Search' })
+map({'n', 'v', 'o'}, "'", ';', { desc = 'Repeat Search' })
 
 -- Window navigation
 map("n", "<C-j>", "<C-w>h", { desc = "Go to Left Window", remap = true })

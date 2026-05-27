@@ -1,0 +1,10 @@
+[Unit]
+Description=Theme Monitor for Fish and Delta
+After=graphical-session.target
+
+[Service]
+ExecStart=%h/Projects/dotfiles/linux/theme-monitor.sh
+Restart=always
+
+[Install]
+WantedBy=default.target

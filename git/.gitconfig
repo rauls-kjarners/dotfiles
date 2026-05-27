@@ -6,8 +6,6 @@
     diffFilter = delta --color-only
 
 [delta]
-    features = dracula
-    dark = true
     navigate = true
     hyperlinks = true
     hyperlinks-file-link-format = "idea://open?file={path}&line={line}"
@@ -21,3 +19,12 @@
     minus-emph-style = "syntax #700000"
     plus-non-emph-style = "syntax #003800"
     minus-non-emph-style = "syntax #3f0001"
+
+[delta "alucard"]
+    syntax-theme = Alucard
+    plus-style = "syntax #d8f0d4"
+    minus-style = "syntax #f7ddd9"
+    plus-emph-style = "syntax #b0e0aa"
+    minus-emph-style = "syntax #f0bdb5"
+    plus-non-emph-style = "syntax #d8f0d4"
+    minus-non-emph-style = "syntax #f7ddd9"

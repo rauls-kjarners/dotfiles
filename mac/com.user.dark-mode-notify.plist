@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.dark-mode-notify</string>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardErrorPath</key>
+    <string>/tmp/dark-mode-notify-stderr.log</string>
+    <key>StandardOutPath</key>
+    <string>/tmp/dark-mode-notify-stdout.log</string>
+    <key>ProgramArguments</key>
+    <array>
+       <string>/opt/homebrew/bin/dark-mode-notify</string>
+       <string>/opt/homebrew/bin/fish</string>
+       <string>-c</string>
+       <string>source ~/Projects/dotfiles/fish/functions/switch_theme.fish; if test "$DARKMODE" = 1; switch_theme dark; else; switch_theme light; end</string>
+    </array>
+</dict>
+</plist>
