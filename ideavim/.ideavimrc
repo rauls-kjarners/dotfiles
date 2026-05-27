@@ -41,6 +41,7 @@ noremap k j
 noremap l k
 noremap ; l
 " Retain the repeat character search on '
+" NOTE: this is also overridden by flash.repeat below — intentional since Flash replaces f/F/t/T
 noremap ' ;
 
 " --- SUB-WORD (CAMELCASE) NAVIGATION ---
