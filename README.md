@@ -33,3 +33,30 @@ If you ever need to run specific steps individually, you can use the sub-command
 - `just dark-mode-notify-install` - Compiles and installs `dark-mode-notify` from source (run automatically by `mac-setup`)
 - `just mac-setup` - Re-installs the macOS auto dark-mode daemon
 - `just linux-setup` - Re-installs the Bazzite/Linux auto dark-mode service
+
+## Neovim IDE Setup (PHP & Web)
+
+The Neovim configuration is heavily customized to act as a JetBrains/PhpStorm replacement. While most tools install automatically via Homebrew, Lazy.nvim, and Mason, a few specific language servers require manual installation. 
+
+If these are missing, Neovim will gracefully ignore them without throwing errors, but you will miss out on the IDE features.
+
+### 1. PHPantom (PHP completion, diagnostics, go-to-def)
+PHPantom is an extremely fast Rust-based PHP language server. It is not available on package managers.
+- Download the pre-compiled binary for your OS/Architecture from [PHPantom Releases](https://github.com/PHPantom-dev/phpantom_lsp/releases)
+- Extract the `phpantom_lsp` executable and place it anywhere in your `$PATH` (e.g. `~/.local/bin/` or `/usr/local/bin/`)
+
+### 2. Phpactor (PHP refactoring)
+Phpactor provides powerful automated refactoring tools (Extract Method, Inline Variable, etc).
+- **Composer (Recommended):** `composer global require phpactor/phpactor`
+- **Homebrew:** `brew install phpactor`
+
+### 3. Twiggy (Symfony Twig templates)
+Provides autocompletion and hover support for Twig files.
+- **NPM:** `npm install -g @twiggyjs/language-server`
+
+### 4. First Run
+Once the above are installed in your `$PATH`:
+1. Open Neovim.
+2. `Lazy.nvim` will automatically download and install all plugins.
+3. `Mason.nvim` will automatically download the rest of the formatters, linters, and debug adapters (`phpstan`, `php-cs-fixer`, `php-debug-adapter`, etc).
+4. Run `:checkhealth` to verify everything is wired up correctly.

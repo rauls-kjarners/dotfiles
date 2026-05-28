@@ -28,6 +28,27 @@ require("lazy").setup({
     -- Extra Tools matching your IdeaVim
     { import = "lazyvim.plugins.extras.editor.dial" },
 
+    -- Navigation
+    { import = "lazyvim.plugins.extras.editor.harpoon2" },
+    { import = "lazyvim.plugins.extras.editor.aerial" },
+    { import = "lazyvim.plugins.extras.editor.inc-rename" },
+
+    -- Coding helpers
+    { import = "lazyvim.plugins.extras.coding.yanky" },
+
+    -- DAP + Testing
+    { import = "lazyvim.plugins.extras.dap.core" },
+    { import = "lazyvim.plugins.extras.test.core" },
+
+    -- Language extras
+    { import = "lazyvim.plugins.extras.lang.yaml" },
+    { import = "lazyvim.plugins.extras.lang.json" },
+    { import = "lazyvim.plugins.extras.lang.docker" },
+
+    -- Formatting + UI
+    { import = "lazyvim.plugins.extras.formatting.prettier" },
+    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
+
     -- import/override with your plugins
     { import = "plugins" },
   },
