@@ -40,13 +40,22 @@ The Neovim configuration is heavily customized to act as a JetBrains/PhpStorm re
 
 If these are missing, Neovim will gracefully ignore them without throwing errors, but you will miss out on the IDE features.
 
-### 1. PHPantom (PHP completion, diagnostics, go-to-def)
-PHPantom is an extremely fast Rust-based PHP language server. It is not available on package managers.
-- Download the pre-compiled binary for your OS/Architecture from [PHPantom Releases](https://github.com/PHPantom-dev/phpantom_lsp/releases)
-- Extract the `phpantom_lsp` executable and place it anywhere in your `$PATH` (e.g. `~/.local/bin/` or `/usr/local/bin/`)
+### 1. PHP Language Servers (PHPantom, php-lsp, Phpactor)
+The Neovim config uses a priority system to prevent multiple heavy PHP servers from running at once. If multiple are installed, they prioritize in this order: **PHPantom** > **php-lsp** > **Phpactor**.
+You can swap between installed servers on the fly (e.g., `:LspStop phpantom` and `:LspStart php-lsp`).
 
-### 2. Phpactor (PHP refactoring)
-Phpactor provides powerful automated refactoring tools (Extract Method, Inline Variable, etc).
+**PHPantom (Highest Priority)**
+Extremely fast Rust-based PHP language server. Not available on package managers.
+- Download the binary from [PHPantom Releases](https://github.com/PHPantom-dev/phpantom_lsp/releases)
+- Extract `phpantom_lsp` and place it in your `$PATH` (e.g. `~/.local/bin/`)
+
+**php-lsp (Alternative)**
+Another high-performance Rust-based PHP language server.
+- Download the binary from [php-lsp Releases](https://github.com/jorgsowa/php-lsp/releases)
+- Extract `php-lsp` and place it in your `$PATH`
+
+**Phpactor (Refactoring & Fallback)**
+Provides powerful automated refactoring tools.
 - **Composer (Recommended):** `composer global require phpactor/phpactor`
 - **Homebrew:** `brew install phpactor`
 

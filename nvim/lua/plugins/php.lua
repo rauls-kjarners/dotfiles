@@ -24,15 +24,26 @@ return {
       -- Disable the LazyVim default
       opts.servers.intelephense = { enabled = false }
 
-      -- PHPantom: only register if binary is in PATH (install from GitHub releases)
-      if vim.fn.exepath("phpantom_lsp") ~= "" then
+      local has_phpantom = vim.fn.exepath("phpantom_lsp") ~= ""
+      local has_phplsp = vim.fn.exepath("php-lsp") ~= ""
+
+      -- PHPantom: highest priority
+      if has_phpantom then
         opts.servers.phpantom = {}
+      end
+
+      -- php-lsp: register but only autostart if phpantom is missing
+      if has_phplsp then
+        opts.servers["php-lsp"] = {
+          autostart = not has_phpantom,
+        }
       end
 
       -- phpactor: only register if binary is in PATH
       -- Install: composer global require phpactor/phpactor
       if vim.fn.exepath("phpactor") ~= "" then
         opts.servers.phpactor = {
+          autostart = not has_phpantom and not has_phplsp,
           init_options = {
             ["language_server_phpstan.enabled"] = false,
             ["language_server_psalm.enabled"] = false,

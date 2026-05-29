@@ -5,3 +5,6 @@
 -- Persistent undo (required for undotree cross-session history)
 vim.opt.undofile = true
 vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
+
+-- Disable line wrap
+vim.opt.wrap = false

@@ -4,6 +4,7 @@
 brew "fish"
 brew "fisher"
 brew "just"
+brew "tmux"
 
 # ====================
 # Git & Version Control

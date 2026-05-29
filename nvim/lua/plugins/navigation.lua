@@ -21,8 +21,8 @@ return {
     "Bekaboo/dropbar.nvim",
     event = "VeryLazy",
     opts = {
-      general = {
-        update_interval = 100,
+      bar = {
+        update_debounce = 100,
       },
     },
   },
