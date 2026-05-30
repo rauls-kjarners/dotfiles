@@ -7,7 +7,8 @@ function switch_theme --description "Switch system themes between dark and light
     end
 
     # Skip if theme is already active (avoids redundant universal variable writes)
-    if test "$theme" = "$_switch_theme_active"
+    # BUT always run if the Zellij config is missing (e.g., first run after setup)
+    if test "$theme" = "$_switch_theme_active"; and test -f "$HOME/.config/zellij/config.kdl"
         return 0
     end
 
@@ -62,6 +63,14 @@ function switch_theme --description "Switch system themes between dark and light
             cat "$HOME/Projects/dotfiles/lazygit/config-base.yml" "$HOME/Projects/dotfiles/lazygit/theme-dark.yml" > "$HOME/.config/lazygit/config.yml"
         end
 
+        # Zellij Theme (live hot-swap — Zellij reloads config.kdl automatically)
+        if test -f "$HOME/.config/zellij/config.kdl"
+            set -l _zj_cfg "$HOME/.config/zellij/config.kdl"
+            set -l _zj_tmp (mktemp)
+            string replace -r -- '^theme .*' 'theme "dracula"' < "$_zj_cfg" > "$_zj_tmp"
+            mv "$_zj_tmp" "$_zj_cfg"
+        end
+
         set -U _switch_theme_active dark
     else if test "$theme" = "light"
         # Git Delta
@@ -109,6 +118,14 @@ function switch_theme --description "Switch system themes between dark and light
         if test -f "$HOME/Projects/dotfiles/lazygit/config-base.yml"
             mkdir -p "$HOME/.config/lazygit"
             cat "$HOME/Projects/dotfiles/lazygit/config-base.yml" "$HOME/Projects/dotfiles/lazygit/theme-light.yml" > "$HOME/.config/lazygit/config.yml"
+        end
+
+        # Zellij Theme (live hot-swap — Zellij reloads config.kdl automatically)
+        if test -f "$HOME/.config/zellij/config.kdl"
+            set -l _zj_cfg "$HOME/.config/zellij/config.kdl"
+            set -l _zj_tmp (mktemp)
+            string replace -r -- '^theme .*' 'theme "alucard"' < "$_zj_cfg" > "$_zj_tmp"
+            mv "$_zj_tmp" "$_zj_cfg"
         end
 
         set -U _switch_theme_active light

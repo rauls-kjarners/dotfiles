@@ -40,11 +40,11 @@ return {
       end
 
       -- phpactor: only register if binary is in PATH
-      -- Install: composer global require phpactor/phpactor
       if vim.fn.exepath("phpactor") ~= "" then
+        local is_fallback = not has_phpantom and not has_phplsp
         opts.servers.phpactor = {
-          autostart = not has_phpantom and not has_phplsp,
-          init_options = {
+          autostart = true,
+          init_options = is_fallback and {} or {
             ["language_server_phpstan.enabled"] = false,
             ["language_server_psalm.enabled"] = false,
             ["language_server.diagnostics_on_update"] = false,

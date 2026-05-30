@@ -38,6 +38,16 @@ link:
     ln -sfn {{justfile_directory()}}/nvim ~/.config/nvim
     ln -sfn {{justfile_directory()}}/ideavim/.ideavimrc ~/.ideavimrc
 
+    # Zellij (copy config.kdl to avoid dirtying the repo on theme switch — mirrors lazygit approach)
+    rm -rf ~/.config/zellij
+    mkdir -p ~/.config/zellij
+    cp {{justfile_directory()}}/zellij/config.kdl ~/.config/zellij/config.kdl
+    ln -sfn {{justfile_directory()}}/zellij/themes ~/.config/zellij/themes
+
+    # Ghostty (config dir — works on both macOS and Linux)
+    rm -rf ~/.config/ghostty
+    ln -sfn {{justfile_directory()}}/ghostty ~/.config/ghostty
+
     just bat-themes
 
 # Build custom bat syntax themes (Alucard + any others in bat/themes/)
@@ -62,6 +72,13 @@ dark-mode-notify-install:
     cp "$TMP/.build/release/dark-mode-notify" /opt/homebrew/bin/dark-mode-notify
     echo "dark-mode-notify installed to /opt/homebrew/bin/dark-mode-notify"
 
+# Install phpactor standalone phar
+install-phpactor:
+    mkdir -p ~/.local/bin
+    curl -Lo ~/.local/bin/phpactor https://github.com/phpactor/phpactor/releases/latest/download/phpactor.phar
+    chmod +x ~/.local/bin/phpactor
+    @echo "phpactor installed to ~/.local/bin/phpactor"
+
 # Setup macOS auto dark mode
 mac-setup: dark-mode-notify-install
     ln -sfn {{justfile_directory()}}/mac/com.user.dark-mode-notify.plist ~/Library/LaunchAgents/com.user.dark-mode-notify.plist
@@ -74,6 +91,8 @@ linux-setup:
     ln -sfn {{justfile_directory()}}/linux/theme-monitor.service ~/.config/systemd/user/theme-monitor.service
     systemctl --user daemon-reload
     systemctl --user enable --now theme-monitor.service
+    # Note: install Ghostty on Bazzite via Distrobox (see README)
+
 
 # OS specific setup
 os-setup:
@@ -84,4 +103,4 @@ os-setup:
     fi
 
 # Run all setup tasks
-setup: brew-install link fish-plugins bat-themes os-setup
+setup: brew-install link fish-plugins bat-themes install-phpactor os-setup

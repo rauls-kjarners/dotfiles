@@ -4,7 +4,7 @@
 brew "fish"
 brew "fisher"
 brew "just"
-brew "tmux"
+brew "zellij"
 
 # ====================
 # Git & Version Control
@@ -38,9 +38,8 @@ brew "neovim"
 # ====================
 # PHP Tooling (nvim)
 # ====================
-# phpactor: install via brew or composer (composer is often more up-to-date)
-# brew "phpactor"
-# OR: composer global require phpactor/phpactor
+# phpactor: install via justfile
+# just install-phpactor
 brew "node"          # required for vscode-php-debug (xdebug adapter) + twiggy LSP
 # php-cs-fixer: install via brew or per-project via composer (composer require --dev friendsofphp/php-cs-fixer)
 # brew "php-cs-fixer"  # PHP formatter (conform.nvim)

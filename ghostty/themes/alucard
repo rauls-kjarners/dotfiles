@@ -1,0 +1,29 @@
+# Alucard — custom light theme for Ghostty
+# Matches the Alucard palette used in fish, lazygit, and delta
+
+background              = #FFFBEB
+foreground              = #1F1F1F
+cursor-color            = #A3144D
+cursor-text             = #FFFBEB
+selection-background    = #CFCFDE
+selection-foreground    = #1F1F1F
+
+# Normal colors (0-7)
+palette = 0=#1F1F1F
+palette = 1=#CB3A2A
+palette = 2=#14710A
+palette = 3=#846E15
+palette = 4=#644AC9
+palette = 5=#A3144D
+palette = 6=#036A96
+palette = 7=#CFCFDE
+
+# Bright colors (8-15)
+palette = 8=#6C664B
+palette = 9=#CB3A2A
+palette = 10=#14710A
+palette = 11=#846E15
+palette = 12=#644AC9
+palette = 13=#A3144D
+palette = 14=#036A96
+palette = 15=#FFFBEB
