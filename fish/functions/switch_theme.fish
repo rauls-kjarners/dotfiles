@@ -15,7 +15,14 @@ function switch_theme --description "Switch system themes between dark and light
     # Use the global user gitconfig (not the tracked dotfile repo copy)
     set -l gitconfig "$HOME/.gitconfig"
 
+    # Resolve lazygit config dir — macOS uses ~/Library/Application Support/lazygit,
+    # Linux uses ~/.config/lazygit. Ask lazygit itself; fall back if not on PATH.
+    set -l lazygit_dir (command -q lazygit; and lazygit --print-config-dir; or echo "$HOME/.config/lazygit")
+
     if test "$theme" = "dark"
+        # bat
+        set -gx BAT_THEME "Dracula"
+
         # Git Delta
         git config --file "$gitconfig" delta.features "dracula"
         git config --file "$gitconfig" delta.dark "true"
@@ -59,8 +66,8 @@ function switch_theme --description "Switch system themes between dark and light
         
         # Lazygit Theme
         if test -f "$HOME/Projects/dotfiles/lazygit/config-base.yml"
-            mkdir -p "$HOME/.config/lazygit"
-            cat "$HOME/Projects/dotfiles/lazygit/config-base.yml" "$HOME/Projects/dotfiles/lazygit/theme-dark.yml" > "$HOME/.config/lazygit/config.yml"
+            mkdir -p "$lazygit_dir"
+            cat "$HOME/Projects/dotfiles/lazygit/config-base.yml" "$HOME/Projects/dotfiles/lazygit/theme-dark.yml" > "$lazygit_dir/config.yml"
         end
 
         # Zellij Theme (live hot-swap — Zellij reloads config.kdl automatically)
@@ -73,6 +80,9 @@ function switch_theme --description "Switch system themes between dark and light
 
         set -U _switch_theme_active dark
     else if test "$theme" = "light"
+        # bat
+        set -gx BAT_THEME "Alucard"
+
         # Git Delta
         git config --file "$gitconfig" delta.features "alucard"
         git config --file "$gitconfig" delta.dark "false"
@@ -116,8 +126,8 @@ function switch_theme --description "Switch system themes between dark and light
         
         # Lazygit Theme
         if test -f "$HOME/Projects/dotfiles/lazygit/config-base.yml"
-            mkdir -p "$HOME/.config/lazygit"
-            cat "$HOME/Projects/dotfiles/lazygit/config-base.yml" "$HOME/Projects/dotfiles/lazygit/theme-light.yml" > "$HOME/.config/lazygit/config.yml"
+            mkdir -p "$lazygit_dir"
+            cat "$HOME/Projects/dotfiles/lazygit/config-base.yml" "$HOME/Projects/dotfiles/lazygit/theme-light.yml" > "$lazygit_dir/config.yml"
         end
 
         # Zellij Theme (live hot-swap — Zellij reloads config.kdl automatically)

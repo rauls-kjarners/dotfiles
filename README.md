@@ -21,7 +21,7 @@ just setup
 ### What `just setup` does
 
 1. **Installs Tools** — Runs `brew bundle` to install core CLI utilities (`fish`, `neovim`, `lazygit`, `eza`, `bat`, `zellij`, etc.) and **Ghostty** (macOS only, via cask).
-2. **Symlinks Configs** — Safely links `fish`, `nvim`, `lazygit`, `.gitconfig`, `.ideavimrc`, and `~/.config/ghostty` into their proper places. Zellij `config.kdl` is copied (not symlinked) so theme switching doesn't dirty the repo.
+2. **Symlinks Configs** — Safely links `fish`, `nvim`, `.gitconfig`, `.ideavimrc`, and `~/.config/ghostty` into their proper places. `lazygit` config is generated per-theme into the OS-correct directory (`~/Library/Application Support/lazygit` on macOS, `~/.config/lazygit` on Linux). Zellij `config.kdl` is copied (not symlinked) so theme switching doesn't dirty the repo.
 3. **Builds bat Themes** — Compiles the custom Alucard bat/delta syntax theme.
 4. **Installs Fish Plugins** — Uses `fisher` to install Fish shell plugins and sets up the prompt.
 5. **Installs Phpactor** — Downloads the standalone `phpactor.phar` and makes it available globally.

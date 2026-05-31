@@ -1,0 +1,5 @@
+# Global gitignore (portable — tracked in dotfiles)
+# Machine-local entries live in ~/.gitignore_global.local (untracked, never committed)
+
+# phpactor per-project config (no relocation option; must be globally ignored)
+.phpactor.json

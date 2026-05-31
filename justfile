@@ -28,10 +28,17 @@ link:
     # Safely include gitconfig (keeps user name/email out of dotfiles repo)
     touch ~/.gitconfig
     grep -q "path = {{justfile_directory()}}/git/.gitconfig" ~/.gitconfig || printf "[include]\n    path = {{justfile_directory()}}/git/.gitconfig\n" >> ~/.gitconfig
+
+    # Global gitignore: tracked portable entries + machine-local entries (e.g. antigravity)
+    # First run: migrate existing ~/.gitignore_global into ~/.gitignore_global.local to preserve it
+    if [ ! -f ~/.gitignore_global.local ] && [ -f ~/.gitignore_global ]; then \
+        mv ~/.gitignore_global ~/.gitignore_global.local; \
+    fi
+    touch ~/.gitignore_global.local
+    cat {{justfile_directory()}}/git/gitignore_global ~/.gitignore_global.local > ~/.gitignore_global
     
-    # Setup lazygit config directory (don't symlink to avoid dirtying git repo)
-    rm ~/.config/lazygit 2>/dev/null || true
-    mkdir -p ~/.config/lazygit
+    # Setup lazygit config dir at the OS-correct path (don't symlink — generated per theme switch)
+    LG_DIR=$(command -v lazygit >/dev/null 2>&1 && lazygit --print-config-dir || echo "$HOME/.config/lazygit"); rm -rf "$LG_DIR" 2>/dev/null; mkdir -p "$LG_DIR"
 
     # Remove first to avoid symlink being created inside the dir if it already exists as a real directory
     rm -rf ~/.config/nvim

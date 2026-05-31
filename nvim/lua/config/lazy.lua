@@ -35,6 +35,8 @@ require("lazy").setup({
 
     -- Coding helpers
     { import = "lazyvim.plugins.extras.coding.yanky" },
+    { import = "lazyvim.plugins.extras.ai.copilot" },
+    { import = "lazyvim.plugins.extras.coding.mini-surround" },
 
     -- DAP + Testing
     { import = "lazyvim.plugins.extras.dap.core" },
@@ -48,6 +50,9 @@ require("lazy").setup({
     -- Formatting + UI
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     { import = "lazyvim.plugins.extras.ui.treesitter-context" },
+
+    -- Util
+    { import = "lazyvim.plugins.extras.util.dot" },
 
     -- import/override with your plugins
     { import = "plugins" },

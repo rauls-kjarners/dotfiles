@@ -14,3 +14,6 @@ vim.opt.colorcolumn = "120"
 
 -- Disable whole line highlight (reduces noise and fixes color conflict with ColorColumn)
 vim.opt.cursorline = false
+
+-- Hide the tab/buffer line at the top
+vim.opt.showtabline = 0

@@ -12,7 +12,12 @@ if status is-interactive
     # ====================
     set -gx EDITOR "nvim"
     set -gx VISUAL "nvim"
-    set -gx BAT_THEME "Dracula"
+    # bat theme follows the active light/dark mode (kept in sync by switch_theme)
+    if test "$_switch_theme_active" = "light"
+        set -gx BAT_THEME "Alucard"
+    else
+        set -gx BAT_THEME "Dracula"
+    end
 
     # Apply theme matching current macOS dark/light mode (no-op on Linux)
     if test (uname) = "Darwin"
