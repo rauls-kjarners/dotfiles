@@ -24,11 +24,25 @@ session_serialization true
 // All other Zellij defaults (Ctrl+p for Pane mode, Ctrl+t for Tab mode, etc.) are kept.
 keybinds {
     shared_except "locked" {
+        // Unbind Zellij's default Alt+Arrow pane movement so Neovim can use them
+        unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
+        
         // Remap to j=left  k=down  l=up  ;=right
         bind "Alt j" { MoveFocusOrTab "Left"; }
         bind "Alt k" { MoveFocus "Down"; }
         bind "Alt l" { MoveFocus "Up"; }
         bind "Alt ;" { MoveFocusOrTab "Right"; }
+
+        // Jump to tabs with Alt + number
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
     }
     pane {
         unbind "h" "j" "k" "l"

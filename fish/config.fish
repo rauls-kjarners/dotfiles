@@ -3,24 +3,24 @@ if test -d /home/linuxbrew/.linuxbrew
     eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
-# Add ~/.local/bin to PATH for tools installed outside Homebrew (e.g. phpactor)
-fish_add_path -g ~/.local/bin
+# Add ~/.local/bin and ~/.cargo/bin to PATH for external tools (phpactor, nvim-mcp)
+fish_add_path -g ~/.local/bin ~/.cargo/bin
 
 if status is-interactive
     # ====================
     # Environment & Themes
     # ====================
-    set -gx EDITOR "nvim"
-    set -gx VISUAL "nvim"
+    set -gx EDITOR nvim
+    set -gx VISUAL nvim
     # bat theme follows the active light/dark mode (kept in sync by switch_theme)
-    if test "$_switch_theme_active" = "light"
-        set -gx BAT_THEME "Alucard"
+    if test "$_switch_theme_active" = light
+        set -gx BAT_THEME Alucard
     else
-        set -gx BAT_THEME "Dracula"
+        set -gx BAT_THEME Dracula
     end
 
     # Apply theme matching current macOS dark/light mode (no-op on Linux)
-    if test (uname) = "Darwin"
+    if test (uname) = Darwin
         if defaults read -g AppleInterfaceStyle >/dev/null 2>&1
             switch_theme dark
         else
@@ -32,9 +32,12 @@ if status is-interactive
     # Aliases
     # ====================
     alias cat="bat"
+
     alias ls="eza --color=always --icons=always"
     alias ll="eza --color=always --long --git --icons=always"
     alias la="eza --color=always --long --git --icons=always --all"
+
+    alias lg="lazygit"
 
     alias zj="zellij attach -c main"
 

@@ -7,7 +7,7 @@
 # ====================
 font-family = JetBrains Mono Nerd Font
 font-size = 13
-font-thicken = false
+adjust-cell-height = 25%
 
 # ====================
 # Theme (native OS dark/light auto-switch)

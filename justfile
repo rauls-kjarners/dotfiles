@@ -86,6 +86,12 @@ install-phpactor:
     chmod +x ~/.local/bin/phpactor
     @echo "phpactor installed to ~/.local/bin/phpactor"
 
+# Install nvim-mcp (Rust-based Neovim MCP server for Claude)
+install-nvim-mcp:
+    cargo install nvim-mcp
+    claude mcp add -s user nvim ~/.cargo/bin/nvim-mcp -- --connect auto || true
+    @echo "nvim-mcp installed (make sure ~/.cargo/bin is in your PATH)"
+
 # Setup macOS auto dark mode
 mac-setup: dark-mode-notify-install
     ln -sfn {{justfile_directory()}}/mac/com.user.dark-mode-notify.plist ~/Library/LaunchAgents/com.user.dark-mode-notify.plist
@@ -110,4 +116,4 @@ os-setup:
     fi
 
 # Run all setup tasks
-setup: brew-install link fish-plugins bat-themes install-phpactor os-setup
+setup: brew-install link fish-plugins bat-themes install-phpactor install-nvim-mcp os-setup

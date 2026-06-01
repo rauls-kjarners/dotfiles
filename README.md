@@ -38,6 +38,7 @@ Run any step independently if needed:
 | `just bat-themes` | Build the custom Alucard bat/delta syntax theme |
 | `just fish-plugins` | Update Fish shell plugins via fisher |
 | `just install-phpactor` | Install standalone phpactor LSP |
+| `just install-nvim-mcp` | Install Neovim MCP server (Rust) |
 | `just dark-mode-notify-install` | Compile and install `dark-mode-notify` from source |
 | `just mac-setup` | Re-install the macOS auto dark-mode daemon |
 | `just linux-setup` | Re-install the Bazzite/Linux auto dark-mode service |
@@ -135,6 +136,13 @@ Provides autocompletion and hover support for `.twig` files.
 ```sh
 npm install -g @twiggyjs/language-server
 ```
+
+### MCP (Model Context Protocol)
+
+To allow Claude Code (or other AI assistants) to read your Neovim buffers and use its LSP securely:
+- **nvim-mcp** _(Rust-based MCP server)_
+- Installed automatically during `just setup` (or manually via `just install-nvim-mcp`).
+- Ensure `~/.cargo/bin` is in your `$PATH`.
 
 ### First Run
 

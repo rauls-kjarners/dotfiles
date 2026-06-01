@@ -20,3 +20,12 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "WinBarNC", { bg = "NONE" })
   end,
 })
+
+-- Disable conceal for markdown by default (prevents jumping text)
+-- You can still toggle conceal manually via <leader>uc
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "markdown.mdx" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})

@@ -17,3 +17,7 @@ vim.opt.cursorline = false
 
 -- Hide the tab/buffer line at the top
 vim.opt.showtabline = 0
+
+-- Disable conceal by default (prevents markdown lines from jumping when editing)
+-- You can still toggle it via <leader>uc
+vim.opt.conceallevel = 0
