@@ -1,6 +1,4 @@
--- Symbol outline + call hierarchy
--- outline.nvim: rich symbol tree (supplement to aerial which LazyVim already provides)
--- trouble.nvim: call hierarchy views (incoming/outgoing calls)
+-- Call hierarchy via trouble.nvim (incoming/outgoing calls)
 
 return {
 

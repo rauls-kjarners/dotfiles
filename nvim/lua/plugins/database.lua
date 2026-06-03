@@ -28,21 +28,26 @@ return {
     "kristijanhusak/vim-dadbod-completion",
     dependencies = { "tpope/vim-dadbod" },
     ft = { "sql", "mysql", "plsql" },
-    init = function()
-      -- Hook into nvim-cmp if present
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "sql", "mysql", "plsql" },
-        callback = function()
-          local cmp = require("cmp")
-          cmp.setup.buffer({
-            sources = cmp.config.sources({
-              { name = "vim-dadbod-completion" },
-            }, {
-              { name = "buffer" },
-            }),
-          })
-        end,
-      })
-    end,
+  },
+
+  -- Wire dadbod source into blink.cmp for SQL buffer completion
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    opts = {
+      sources = {
+        providers = {
+          dadbod = {
+            name = "Dadbod",
+            module = "vim_dadbod_completion.blink",
+          },
+        },
+        per_filetype = {
+          sql   = { "dadbod", "buffer" },
+          mysql = { "dadbod", "buffer" },
+          plsql = { "dadbod", "buffer" },
+        },
+      },
+    },
   },
 }

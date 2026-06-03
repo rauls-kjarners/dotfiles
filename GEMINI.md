@@ -1,19 +1,8 @@
-# CLAUDE.md
+# Gemini / Antigravity Rules
 
 ## Core operating principles
 
-Two rules govern everything below.
-
-**Precedence.** When guidance conflicts, correctness and safety win over delegation/efficiency mechanics. On genuinely trivial tasks, use judgment instead of ritual — these rules bias toward caution, which is pure overhead on small work.
-
 **Never commit without permission.** NEVER commit anything without explicit permission from the user. NEVER run `git commit` or `git push` unless the user has explicitly requested or approved it.
-
-**The routing gate — consume vs. operate.** Before any read, search, or analysis, decide which mode you're in:
-
-- **Operate-on** — you're about to edit, refactor, or implement in this code. Keep it in your own context, regardless of size. You cannot edit well from someone else's summary.
-- **Consume-and-discard** — you want a verdict, not the bytes (audits, searches, reviews, history, external research). This is a candidate for offloading to agy.
-
-This gate scopes every delegation rule below — size thresholds and the grep/git defaults apply to *consume-and-discard* only. **Never delegate a file you're about to operate on.** And if a review is likely to lead straight into editing the same file, read it locally once rather than delegate-then-read (otherwise you fetch it twice).
 
 ## Engineering discipline
 
@@ -24,65 +13,6 @@ This gate scopes every delegation rule below — size thresholds and the grep/gi
 **Surgical changes.** Touch only what the task requires. Don't "improve" adjacent code, reformat, or refactor what isn't broken; match existing style even if you'd do it differently. Remove imports/variables your own changes orphaned; leave pre-existing dead code alone (mention it, don't delete). Every changed line should trace directly to the request.
 
 **Goal-driven execution.** Turn tasks into verifiable goals ("add validation" → "write tests for invalid inputs, then make them pass"; "fix the bug" → "write a failing test that reproduces it, then make it pass"). For multi-step work, state a brief plan with a verify check per step. Strong success criteria let you loop independently; weak ones ("make it work") force constant clarification.
-
-## Delegating to agy (`delegate_to_agy`)
-
-Offloading heavy *consume-and-discard* work to agy keeps your context window lean — you get the verdict back, not the raw bytes. This is the context-budget win, and it's larger than per-query savings.
-
-**What to offload.** Within consume-and-discard:
-
-- **grep / `git diff` / `git log` — delegate by default,** because output size is unpredictable before you run it. Exception: when you can bound it small and need it inline — `git log -n 5`, `git diff --stat`, a `git diff` of the single file you just touched — run it directly.
-- **Files >200 lines** you're reading to analyze or review (not edit).
-- **Multi-file analysis spanning >3 files** for bug-hunting, architecture, or debugging you're not editing.
-- **Bulky or multi-source external research.** A single-fact lookup you can do inline; delegate when it's a real documentation/research dig.
-- **Adversarial review and plan critique** — delegate not mainly for tokens but because agy is a *different model* and won't share your blind spots.
-
-Don't assume you remember a file's contents — code changes. If you're verifying rather than editing, delegate and check.
-
-### Prefer several parallel calls over a single combined prompt
-
-The harness runs concurrent `delegate_to_agy` calls simultaneously, so when a delegation contains independent sub-questions, split it into multiple calls in one message (multiple tool uses). Wall-clock then ≈ the slowest sub-call rather than the sum, each sub-prompt stays focused, and a partial failure degrades gracefully.
-
-**Split test (structural, not numeric):** *Can I name ≥2 sub-questions that do NOT depend on each other's output, without forcing them?*
-
-- **Yes** → split, one call per sub-question.
-- **No** (including "only one real question, even if the prompt is long") → single prompt.
-
-If you have to strain to invent a second sub-question, the answer is no.
-
-Weigh one cost: each shard must be self-contained and restate project context, so N calls = N× cold-start setup on agy's side. Split when real independent parts exist *and* the parallelism is worth that overhead. Natural split points: per-symbol search, per-directory scan, per-layer (Domain / Infrastructure / tests), per-task in a multi-task refactor. Don't split when sub-questions are sequential — one feeds the next.
-
-### How to delegate
-
-Pass a clear `prompt` (exactly what to find or analyze), the absolute `cwd`, and relevant paths in `files`. Await the JSON response and use the summary.
-
-- **Carry semantic context forward.** If a delegation follows a semantic lookup (e.g., via JetBrains MCP `mcp__*__search_symbol` or Neovim MCP LSP tools), include the resolved FQN, exact identifier string, and target directories in the prompt — agy starts cold and will re-derive textually, risking the wrong class when method names collide.
-- **agy reads disk; MCP reads the IDE's in-memory model.** Unsaved edits are invisible to agy. If delegating after making edits, save first or say so in the prompt.
-
-### STOP & VERIFY
-
-The rules above describe what to do; this layer fights the excuses you'll generate against them at execution time. Failure runs in **both** directions — under-delegating consume work, and over-delegating work you should be doing yourself.
-
-You're off the rails if:
-
-- You delegated a file you were about to **edit** and are now working from agy's summary. Operate-on stays in your context.
-- You ran an **unbounded** `grep` / `git diff` / `git log` in-terminal instead of delegating. (Bounded ones — `-n 5`, `--stat`, a single-file diff — are fine to run directly.)
-- You read or held a large file in context to **audit or review** it instead of delegating.
-- You answered a consume trigger from memory instead of verifying — code changes.
-- You split a delegation you had to **strain** to find a second sub-question for. No independent parts means no parallel gain, just N× cold-start overhead.
-
-### Rationalization table
-
-| Excuse | Reality |
-|---|---|
-| "I already know this code." | Code changes. If you're verifying, delegate and check. |
-| "The file is probably small." | If you're consuming and unsure, delegate — don't guess. |
-| "I can answer this directly." | If it's a consume trigger and you're not editing, delegate. Your memory of the codebase goes stale. |
-| "It's faster if I just read it." | For consume work, context-budget conservation outranks speed. |
-| "I only need a small part of the file." | *Consuming* → delegate the whole file, let agy extract. *Editing* → read it locally; you need the source. |
-| "I'll just delegate this file I'm about to edit." | You'll edit from a summary, half-blind, and miss what it dropped. Operate-on stays local. |
-| "I'll delegate the review, then read the file to make the change." | If the review leads straight to an edit, read it once locally. Don't fetch it twice. |
-| "I'll split this to be safe." | If you couldn't name ≥2 independent sub-questions without forcing them, don't split. |
 
 ## JetBrains MCP — tool priority (PhpStorm, PyCharm, GoLand)
 
@@ -149,14 +79,3 @@ When working in a project where Neovim is running and `nvim-mcp` tools are expos
    - **Behavior change (logic, control flow, new feature):** Run relevant test targets via the shell. Static analysis alone is never enough for behavior changes.
 
 6. **Framework navigation via Shell.** For framework-specific lookups, bypass Neovim MCP and use the specific framework CLI tool via the shell (e.g., `php bin/console debug:router` or `php bin/console debug:container`).
-
-## Routing: IDE MCP vs. agy
-
-Applies only to *consume-and-discard* work (operate-on stays in context — see Core principles) in projects where an IDE MCP (JetBrains or Neovim) is exposed. Within consume-and-discard, the split is **semantic vs. textual**:
-
-- **IDE MCP** — semantic, bounded queries: single-symbol lookup, single-file or small-set inspections, structural search within a target directory, rename refactors, framework registry lookups, project config introspection. Also the **post-rename text search audit** — even when codebase-wide, it's a single known identifier following a semantic operation, so keep it in MCP to keep the rename context coupled.
-- **agy** — wide textual queries: codebase-wide grep/search audits spanning many modules, `git diff` / `git log`, multi-file analysis, bulky external research, adversarial review.
-
-**Text search boundary:** bounded / single-identifier / post-rename → IDE MCP; wide and exploratory → agy.
-
-When both fit, prefer IDE MCP for precision; switch to agy if the result set will exceed a handful of files.

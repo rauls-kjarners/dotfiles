@@ -1,5 +1,4 @@
 -- Project-wide search and replace
--- grug-far.nvim: modern find & replace with preview (actively maintained spectre alternative)
 -- ssr.nvim: structural search/replace (PhpStorm structural search equivalent)
 
 return {

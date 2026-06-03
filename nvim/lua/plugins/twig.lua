@@ -1,7 +1,6 @@
 -- Twig template support (Symfony)
 -- 1. Treesitter parser for syntax highlighting
--- 2. twiggy-language-server for basic completion/hover (limited but usable)
---    Install: npm install -g @twiggyjs/language-server
+-- 2. twiggy-language-server for basic completion/hover (limited but usable, handled by Mason)
 -- 3. prettier-plugin-twig is handled by formatting.prettier extra (conform)
 
 return {

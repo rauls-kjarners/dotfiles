@@ -10,7 +10,7 @@ theme "dracula"
 
 // UI
 pane_frames true
-mouse_mode true
+mouse_mode false
 copy_on_select true
 scroll_buffer_size 10000
 

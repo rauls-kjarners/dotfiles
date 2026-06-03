@@ -9,6 +9,11 @@
 
 return {
   {
+    "linw1995/nvim-mcp",
+    build = "cargo install --path .",
+    opts = {},
+  },
+  {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     event = "VeryLazy", -- start WebSocket server at startup so external

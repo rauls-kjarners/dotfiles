@@ -6,6 +6,7 @@ return {
       -- Use the string "auto" so lualine re-derives colors on every colorscheme change.
       -- (Pinning a snapshot table would freeze colors at startup.)
       opts.options.theme = "auto"
+      return opts
     end,
     config = function(_, opts)
       require("lualine").setup(opts)

@@ -4,6 +4,7 @@
 brew "fish"
 brew "fisher"
 brew "just"
+brew "mise"
 brew "zellij"
 
 # ====================
@@ -23,6 +24,13 @@ brew "fd"
 brew "ripgrep"
 brew "fzf"
 brew "zoxide"
+brew "yazi"
+brew "try"
+brew "btop"
+brew "fastfetch"
+brew "gum"
+brew "glow"
+brew "tealdeer"
 
 # ====================
 # Data Processors
@@ -36,15 +44,15 @@ brew "htmlq"
 brew "neovim"
 
 # ====================
-# PHP Tooling (nvim)
+# Containers
 # ====================
-# phpactor: install via justfile
-# just install-phpactor
-brew "node"          # required for vscode-php-debug (xdebug adapter) + twiggy LSP
-# php-cs-fixer: install via brew or per-project via composer (composer require --dev friendsofphp/php-cs-fixer)
-# brew "php-cs-fixer"  # PHP formatter (conform.nvim)
+brew "lazydocker"
+brew "k9s"
 
 # ====================
-# Fonts
+# Databases
 # ====================
-cask "font-jetbrains-mono-nerd-font"
+brew "lazysql"
+brew "pgcli"
+brew "sqlite"
+brew "redis"

@@ -1,10 +1,22 @@
-# default recipe lists all available recipes
+# default recipe presents an interactive menu using gum
 default:
-    @just --list
+    @if command -v gum > /dev/null; then \
+        just $(just --summary | tr ' ' '\n' | gum choose --header "Select a recipe to run:"); \
+    else \
+        just --list; \
+    fi
+
+# Install GitHub CLI extensions
+gh-extensions:
+    gh extension install dlvhdr/gh-dash || true
 
 # Install packages with Homebrew
 brew-install:
     brew bundle
+
+# Install tools with mise
+mise-install:
+    mise install
 
 # Install fish plugins with Fisher
 fish-plugins:
@@ -55,6 +67,10 @@ link:
     rm -rf ~/.config/ghostty
     ln -sfn {{justfile_directory()}}/ghostty ~/.config/ghostty
 
+    # Mise (global tool configuration)
+    mkdir -p ~/.config/mise
+    ln -sfn {{justfile_directory()}}/mise/config.toml ~/.config/mise/config.toml
+
     just bat-themes
 
 # Build custom bat syntax themes (Alucard + any others in bat/themes/)
@@ -76,35 +92,59 @@ dark-mode-notify-install:
     trap 'rm -rf "$TMP"' EXIT
     git clone --depth=1 https://github.com/bouk/dark-mode-notify.git "$TMP"
     swift build -c release --disable-sandbox --package-path "$TMP"
-    cp "$TMP/.build/release/dark-mode-notify" /opt/homebrew/bin/dark-mode-notify
-    echo "dark-mode-notify installed to /opt/homebrew/bin/dark-mode-notify"
+    cp "$TMP/.build/release/dark-mode-notify" "$(brew --prefix)/bin/dark-mode-notify"
+    echo "dark-mode-notify installed to $(brew --prefix)/bin/dark-mode-notify"
 
-# Install phpactor standalone phar
-install-phpactor:
-    mkdir -p ~/.local/bin
-    curl -Lo ~/.local/bin/phpactor https://github.com/phpactor/phpactor/releases/latest/download/phpactor.phar
-    chmod +x ~/.local/bin/phpactor
-    @echo "phpactor installed to ~/.local/bin/phpactor"
+# Update system packages and dotfile-managed tools
+update:
+    brew update && brew upgrade
+    mise upgrade
+    fish -c 'fisher update'
+    gh extension upgrade --all || true
+    nvim --headless "+Lazy! sync" +qa
 
-# Install nvim-mcp (Rust-based Neovim MCP server for Claude)
+# Clean system and dotfile tool caches
+clean:
+    brew cleanup
+    mise prune
+
+# Register nvim-mcp (Rust-based Neovim MCP server for Claude)
 install-nvim-mcp:
-    cargo install nvim-mcp
     claude mcp add -s user nvim ~/.cargo/bin/nvim-mcp -- --connect auto || true
-    @echo "nvim-mcp installed (make sure ~/.cargo/bin is in your PATH)"
+    @echo "nvim-mcp registered with Claude (compiled by Lazy.nvim)"
 
-# Setup macOS auto dark mode
+# Setup macOS specific tools (auto dark mode, fonts)
 mac-setup: dark-mode-notify-install
+    brew install --cask font-jetbrains-mono-nerd-font || true
     ln -sfn {{justfile_directory()}}/mac/com.user.dark-mode-notify.plist ~/Library/LaunchAgents/com.user.dark-mode-notify.plist
     launchctl unload ~/Library/LaunchAgents/com.user.dark-mode-notify.plist 2>/dev/null || true
     launchctl load ~/Library/LaunchAgents/com.user.dark-mode-notify.plist
 
-# Setup Linux auto dark mode
+# Setup Linux specific tools (auto dark mode, fonts)
 linux-setup:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    
+    echo "Setting up auto dark mode service..."
     mkdir -p ~/.config/systemd/user
     ln -sfn {{justfile_directory()}}/linux/theme-monitor.service ~/.config/systemd/user/theme-monitor.service
     systemctl --user daemon-reload
     systemctl --user enable --now theme-monitor.service
+    
+    echo "Installing JetBrains Mono Nerd Font..."
+    FONT_DIR="$HOME/.local/share/fonts/JetBrainsMonoNerd"
+    mkdir -p "$FONT_DIR"
+    curl -L -o /tmp/JetBrainsMono.zip "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+    unzip -o -q /tmp/JetBrainsMono.zip -d "$FONT_DIR"
+    rm /tmp/JetBrainsMono.zip
+    fc-cache -fv
     # Note: install Ghostty on Bazzite via Distrobox (see README)
+
+    if command -v podman > /dev/null; then
+        echo "Enabling Podman socket (for lazydocker/k9s compatibility)..."
+        systemctl --user enable --now podman.socket
+    fi
+
 
 
 # OS specific setup
@@ -116,4 +156,4 @@ os-setup:
     fi
 
 # Run all setup tasks
-setup: brew-install link fish-plugins bat-themes install-phpactor install-nvim-mcp os-setup
+setup: brew-install gh-extensions mise-install link fish-plugins bat-themes os-setup

@@ -10,8 +10,8 @@ return {
     opts = function(_, opts)
       opts.servers = opts.servers or {}
 
-      -- Tame basedpyright's aggressive default type-checking (off → basic → standard → strict).
-      -- "standard" catches real errors (missing types, bad calls, unresolved imports) without
+      -- Tame basedpyright's aggressive default type-checking (off → basic → standard → recommended → strict).
+      -- "recommended" catches real errors (missing types, bad calls, unresolved imports) without
       -- drowning Django/FastAPI/AI-SDK codebases in noise. Good fit for typed web + AI work.
       opts.servers.basedpyright = {
         settings = {

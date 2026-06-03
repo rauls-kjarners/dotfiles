@@ -48,20 +48,18 @@ return {
       register_custom_lsp("phpantom")
       register_custom_lsp("php-lsp")
 
-      -- phpactor: only register if binary is in PATH
-      if vim.fn.exepath("phpactor") ~= "" then
-        local is_fallback = not has_phpantom and not has_phplsp
-        opts.servers.phpactor = {
-          autostart = true,
-          init_options = is_fallback and {} or {
-            ["language_server_phpstan.enabled"] = false,
-            ["language_server_psalm.enabled"] = false,
-            ["language_server.diagnostics_on_update"] = false,
-            ["language_server.diagnostics_on_save"] = false,
-            ["language_server.diagnostics_on_open"] = false,
-          },
-        }
-      end
+      -- phpactor: managed by Mason, unconditionally register to ensure installation
+      local is_fallback = not has_phpantom and not has_phplsp
+      opts.servers.phpactor = {
+        autostart = true,
+        init_options = is_fallback and {} or {
+          ["language_server_phpstan.enabled"] = false,
+          ["language_server_psalm.enabled"] = false,
+          ["language_server.diagnostics_on_update"] = false,
+          ["language_server.diagnostics_on_save"] = false,
+          ["language_server.diagnostics_on_open"] = false,
+        },
+      }
 
       -- Autocommand to split Code Actions and disable phpactor bloat
       local strip_phpactor = has_phpantom or has_phplsp

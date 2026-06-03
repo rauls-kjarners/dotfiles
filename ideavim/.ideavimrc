@@ -22,7 +22,7 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-Plug 'vim-scripts/ReplaceWithRegister'
+" Plug 'vim-scripts/ReplaceWithRegister'
 set anyobject
 set dial
 " set quickscope
@@ -126,13 +126,16 @@ nnoremap <leader>fr :action RecentFiles<CR>
 " LazyVim text search (Grep)
 nnoremap <leader>sg :action FindInPath<CR>
 nnoremap <leader>/  :action FindInPath<CR>
+nnoremap <leader>sG :action SelectInProjectView<CR>:action FindInPath<CR>
 
 " File / Symbol / Class / Action searches
-nnoremap <leader>sf :action GotoFile<CR>
-nnoremap <leader>sc :action GotoClass<CR>
-nnoremap <leader>ss :action GotoSymbol<CR>
-nnoremap <leader>sa :action GotoAction<CR>
-nnoremap <leader>fn :action NewElement<CR>
+nnoremap <leader><space> :action GotoFile<CR>
+nnoremap <leader>ff      :action GotoFile<CR>
+nnoremap <leader>sf      :action GotoFile<CR>
+nnoremap <leader>sc      :action GotoClass<CR>
+nnoremap <leader>ss      :action GotoSymbol<CR>
+nnoremap <leader>sa      :action GotoAction<CR>
+nnoremap <leader>fn      :action NewElement<CR>
 
 "" --- CODE / LSP ---
 nnoremap <leader>ca :action ShowIntentionActions<CR>
@@ -151,18 +154,19 @@ nnoremap gt :action GotoTest<CR>
 nnoremap gm :action GotoSuperMethod<CR>
 
 "" --- HOVER & TYPE INFO ---
+nnoremap K           :action ShowHoverInfo<CR>
 nnoremap <leader>qi  :action ShowHoverInfo<CR>
 nnoremap <leader>qy  :action QuickTypeDefinition<CR>
 nnoremap <leader>qey :action ExpressionTypeInfo<CR>
 
 "" --- USAGES ---
-" nnoremap gr         :action FindUsages<CR> " LazyVim Style
+nnoremap gr         :action ShowUsages<CR>
 nnoremap <leader>fu :action FindUsages<CR>
 nnoremap <leader>su :action ShowUsages<CR>
 
 "" --- DIAGNOSTICS ---
-nnoremap ]e         :action GotoNextError<CR>        " LazyVim Style
-nnoremap [e         :action GotoPreviousError<CR>    " LazyVim Style
+nnoremap ]e         :action GotoNextError<CR>
+nnoremap [e         :action GotoPreviousError<CR>
 nnoremap <leader>cd :action ShowErrorDescription<CR>
 
 "" --- REFACTORING ---
@@ -179,6 +183,8 @@ nnoremap <leader>sw :action SurroundWith<CR>
 vnoremap <leader>sw :action SurroundWith<CR>
 
 "" --- MISC ---
+" Paste over visual selection without yanking the replaced text (LazyVim style)
+vnoremap p "_dP
 nnoremap <leader>fs :action FileStructurePopup<CR>
 nnoremap <leader>lc :action JumpToLastChange<CR>
 nnoremap <leader>ll :action RecentLocations<CR>
