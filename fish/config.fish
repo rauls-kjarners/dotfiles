@@ -56,7 +56,18 @@ if status is-interactive
     alias ll="eza --color=always --long --git --icons=always"
     alias la="eza --color=always --long --git --icons=always --all"
 
-    alias lg="lazygit"
+    alias lzg="lazygit"
+    alias lzd="lazydocker"
+    alias lzs="lazysql"
+
+    function y --description "Launch yazi and cd into the last directory on exit"
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        command yazi $argv --cwd-file=$tmp
+        if set cwd (command cat -- $tmp); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            builtin cd -- "$cwd"
+        end
+        command rm -f -- "$tmp"
+    end
 
     alias zj="zellij attach -c main"
 

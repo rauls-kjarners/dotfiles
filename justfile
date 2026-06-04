@@ -63,6 +63,10 @@ link:
     cp {{justfile_directory()}}/zellij/config.kdl ~/.config/zellij/config.kdl
     ln -sfn {{justfile_directory()}}/zellij/themes ~/.config/zellij/themes
 
+    # Yazi keymap
+    mkdir -p ~/.config/yazi
+    ln -sfn {{justfile_directory()}}/yazi/keymap.toml ~/.config/yazi/keymap.toml
+
     # Ghostty (config dir — works on both macOS and Linux)
     rm -rf ~/.config/ghostty
     ln -sfn {{justfile_directory()}}/ghostty ~/.config/ghostty

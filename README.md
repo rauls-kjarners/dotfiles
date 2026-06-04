@@ -57,6 +57,12 @@ Themes auto-switch to match the OS dark/light mode. No manual action needed afte
 | Multiplexer (Zellij) | `dracula` built-in   | `alucard` (custom)   |
 | Git diff (delta)     | Dracula syntax theme | Alucard syntax theme |
 | Git UI (lazygit)     | Dracula colors       | Alucard colors       |
+| File Manager (yazi)   | Dracula colors       | Alucard colors       |
+| Docker UI (lazydocker) | Dracula colors      | Alucard colors       |
+| Kubernetes TUI (k9s)  | Dracula skin         | Dracula skin         |
+| Disk monitor (btop)   | Dracula theme        | Alucard theme        |
+| Database CLI (pgcli)  | Dracula syntax       | Alucard syntax       |
+| tldr (tealdeer)       | Dracula syntax       | Alucard syntax       |
 
 Switching is handled by `switch_theme dark|light` (a fish function). It is called automatically on shell startup by reading the OS dark mode preference.
 
@@ -75,6 +81,13 @@ Switching is handled by `switch_theme dark|light` (a fish function). It is calle
 | Orange                 | `#A34D14`              |
 | Neutral (selection bg) | `#CFCFDE`              |
 | Comment                | `#6C664B`              |
+
+## Common Aliases
+
+- `lzg`: Launches `lazygit`
+- `lzd`: Launches `lazydocker`
+- `lzs`: Launches `lazysql`
+- `y`: Launches `yazi` and automatically changes your directory (`cd`) when you exit.
 
 ## Zellij
 

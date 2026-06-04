@@ -70,7 +70,13 @@ function switch_theme --description "Switch system themes between dark and light
         set -f delta_feature dracula
         set -f delta_dark    true
         set -f lazygit_theme "$_dotfiles/lazygit/theme-dark.yml"
+        set -f lazydocker_theme "$_dotfiles/lazydocker/theme-dark.yml"
         set -f zellij_theme  dracula
+        set -f yazi_theme    "$_dotfiles/yazi/theme-dark.toml"
+        set -f btop_theme    dracula
+        set -f k9s_skin      dracula
+        set -f pgcli_theme   "$_dotfiles/pgcli/theme-dark"
+        set -f tealdeer_theme "$_dotfiles/tealdeer/theme-dark.toml"
         set -f glamour_style "$_dotfiles/glamour/dracula.json"
         set -f agy_color_scheme solarized dark
     else
@@ -109,7 +115,13 @@ function switch_theme --description "Switch system themes between dark and light
         set -f delta_feature alucard
         set -f delta_dark    false
         set -f lazygit_theme "$_dotfiles/lazygit/theme-light.yml"
+        set -f lazydocker_theme "$_dotfiles/lazydocker/theme-light.yml"
         set -f zellij_theme  alucard
+        set -f yazi_theme    "$_dotfiles/yazi/theme-light.toml"
+        set -f btop_theme    alucard
+        set -f k9s_skin      dracula
+        set -f pgcli_theme   "$_dotfiles/pgcli/theme-light"
+        set -f tealdeer_theme "$_dotfiles/tealdeer/theme-light.toml"
         set -f glamour_style "$_dotfiles/glamour/alucard.json"
         set -f agy_color_scheme solarized light
     end
@@ -124,11 +136,17 @@ function switch_theme --description "Switch system themes between dark and light
         set -U $argv[1] $argv[2..-1]
     end
 
+    # Helper to set exported universal variable and erase any shadowing global variable
+    function _set_ux
+        set -e -g $argv[1] 2>/dev/null
+        set -Ux $argv[1] $argv[2..-1]
+    end
+
     # bat (-Ux so live-propagates to already-open shells, no restart needed)
-    set -Ux BAT_THEME "$bat_theme"
+    _set_ux BAT_THEME "$bat_theme"
 
     # Glamour (used by agy / Bubble Tea apps for markdown/diff rendering)
-    set -Ux GLAMOUR_STYLE "$glamour_style"
+    _set_ux GLAMOUR_STYLE "$glamour_style"
 
     # agy (Antigravity CLI) — colorScheme in antigravity-cli/settings.json
     set -l _agy_settings "$HOME/.gemini/antigravity-cli/settings.json"
@@ -175,7 +193,7 @@ function switch_theme --description "Switch system themes between dark and light
     _set_u fish_pager_color_selected_background --background=$p_pager_sel_bg
 
     # FZF and Hydro prompt colors
-    set -Ux FZF_DEFAULT_OPTS  "$fzf_opts"
+    _set_ux FZF_DEFAULT_OPTS  "$fzf_opts"
     _set_u hydro_color_pwd      $h_pwd
     _set_u hydro_color_git      $h_git
     _set_u hydro_color_error    $h_error
@@ -188,6 +206,73 @@ function switch_theme --description "Switch system themes between dark and light
         cat "$_dotfiles/lazygit/config-base.yml" "$lazygit_theme" > "$lazygit_dir/config.yml"
     end
 
+    # Lazydocker theme
+    if test -f "$_dotfiles/lazydocker/config-base.yml"
+        set -l lazydocker_dir "$HOME/Library/Application Support/lazydocker"
+        test (uname) = Linux; and set lazydocker_dir "$HOME/.config/lazydocker"
+        mkdir -p "$lazydocker_dir"
+        cat "$_dotfiles/lazydocker/config-base.yml" "$lazydocker_theme" > "$lazydocker_dir/config.yml"
+    end
+
+    # Yazi theme
+    if test -f "$yazi_theme"
+        mkdir -p "$HOME/.config/yazi"
+        cp "$yazi_theme" "$HOME/.config/yazi/theme.toml"
+    end
+
+    # Btop theme
+    mkdir -p "$HOME/.config/btop/themes"
+    cp "$_dotfiles/btop/themes/"*.theme "$HOME/.config/btop/themes/" 2>/dev/null
+    if test -f "$HOME/.config/btop/btop.conf"
+        set -l _btop_tmp (mktemp)
+        if grep -q "^color_theme =" "$HOME/.config/btop/btop.conf"
+            string replace -r -- '^color_theme = .*' "color_theme = \"$btop_theme\"" < "$HOME/.config/btop/btop.conf" > "$_btop_tmp"
+        else
+            cat "$HOME/.config/btop/btop.conf" > "$_btop_tmp"
+            echo "color_theme = \"$btop_theme\"" >> "$_btop_tmp"
+        end
+        mv "$_btop_tmp" "$HOME/.config/btop/btop.conf"
+    else
+        echo "color_theme = \"$btop_theme\"" > "$HOME/.config/btop/btop.conf"
+    end
+
+    # K9s skin
+    set -l k9s_dir "$HOME/Library/Application Support/k9s"
+    test (uname) = Linux; and set k9s_dir "$HOME/.config/k9s"
+    mkdir -p "$k9s_dir/skins"
+    cp "$_dotfiles/k9s/skins/"*.yaml "$k9s_dir/skins/" 2>/dev/null
+    if test -f "$k9s_dir/config.yaml"
+        set -l _k9s_tmp (mktemp)
+        if grep -q "skin:" "$k9s_dir/config.yaml"
+            # skin: key exists — replace it
+            string replace -r -- 'skin: .*' "skin: $k9s_skin" < "$k9s_dir/config.yaml" > "$_k9s_tmp"
+        else
+            # No skin: line — insert after 'ui:' if present, or append ui+skin block if absent
+            awk -v skin="$k9s_skin" '
+                /^  ui:/ { print; print "    skin: " skin; injected=1; next }
+                { print }
+                END { if (!injected) { print "  ui:"; print "    skin: " skin } }
+            ' "$k9s_dir/config.yaml" > "$_k9s_tmp"
+        end
+        mv "$_k9s_tmp" "$k9s_dir/config.yaml"
+    else
+        echo "k9s:
+  ui:
+    skin: $k9s_skin" > "$k9s_dir/config.yaml"
+    end
+
+    # pgcli theme
+    if test -f "$_dotfiles/pgcli/config-base"
+        mkdir -p "$HOME/.config/pgcli"
+        cat "$_dotfiles/pgcli/config-base" "$pgcli_theme" > "$HOME/.config/pgcli/config"
+    end
+
+    # tealdeer theme
+    if test -f "$_dotfiles/tealdeer/config-base.toml"
+        mkdir -p "$HOME/.config/tealdeer"
+        cat "$_dotfiles/tealdeer/config-base.toml" "$tealdeer_theme" > "$HOME/.config/tealdeer/config.toml"
+    end
+
     # Zellij theme (live hot-swap — Zellij reloads config.kdl automatically)
     if test -f "$HOME/.config/zellij/config.kdl"
         set -l _zj_cfg "$HOME/.config/zellij/config.kdl"
@@ -197,5 +282,5 @@ function switch_theme --description "Switch system themes between dark and light
     end
 
     set -U _switch_theme_active "$theme"
-    functions --erase _set_u
+    functions --erase _set_u _set_ux
 end
