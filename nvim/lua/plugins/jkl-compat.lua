@@ -52,4 +52,18 @@ return {
       },
     },
   },
+
+  -- Neo-tree override (jkl; navigation scheme: j=left/close, k=down, l=up/none, ;=right/open)
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      window = {
+        mappings = {
+          ["l"] = "none",
+          ["j"] = "close_node",
+          [";"] = "open",
+        },
+      },
+    },
+  },
 }

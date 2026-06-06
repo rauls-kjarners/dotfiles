@@ -60,9 +60,6 @@ nnoremap <Esc> :nohlsearch<CR>
 " nnoremap L <C-u>
 " vnoremap L <C-u>
 
-" Redo
-nnoremap U <C-r>
-
 " Open config file
 nnoremap <leader>cc :edit ~/.ideavimrc<CR>
 
