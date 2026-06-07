@@ -11,10 +11,6 @@
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   callback = function()
-    -- Clear ColorColumn background so virt-column.nvim draws a clean vertical line instead of a block
-    vim.api.nvim_set_hl(0, "ColorColumn", { bg = "NONE" })
-    -- Link the virtual column line to the window separator color so it looks consistent and subtle
-    vim.api.nvim_set_hl(0, "VirtColumn", { link = "WinSeparator" })
     -- Clear WinBar background so dropbar.nvim blends into the normal background instead of being pitch black
     vim.api.nvim_set_hl(0, "WinBar", { bg = "NONE" })
     vim.api.nvim_set_hl(0, "WinBarNC", { bg = "NONE" })
