@@ -49,6 +49,21 @@ return {
             },
           },
         },
+        sources = {
+          explorer = {
+            win = {
+              list = {
+                keys = {
+                  ["l"] = "list_up",
+                  ["k"] = "list_down",
+                  ["j"] = "explorer_close",
+                  [";"] = "confirm",
+                  ["h"] = false,
+                }
+              }
+            }
+          }
+        }
       },
     },
   },
@@ -59,9 +74,11 @@ return {
     opts = {
       window = {
         mappings = {
-          ["l"] = "none",
-          ["j"] = "close_node",
-          [";"] = "open",
+          ["l"] = "none",          -- Fall back to global k (Move Up)
+          ["k"] = "none",          -- Fall back to global j (Move Down)
+          ["j"] = "close_node",    -- Explicit Neo-tree command for Left
+          [";"] = "open",          -- Explicit Neo-tree command for Right
+          ["h"] = "none",          -- Clear LazyVim's default close_node mapping on h
         },
       },
     },
