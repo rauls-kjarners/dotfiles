@@ -39,19 +39,6 @@ Offloading heavy *consume-and-discard* work to agy keeps your context window lea
 
 Don't assume you remember a file's contents — code changes. If you're verifying rather than editing, delegate and check.
 
-### Prefer several parallel calls over a single combined prompt
-
-The harness runs concurrent `delegate_to_agy` calls simultaneously, so when a delegation contains independent sub-questions, split it into multiple calls in one message (multiple tool uses). Wall-clock then ≈ the slowest sub-call rather than the sum, each sub-prompt stays focused, and a partial failure degrades gracefully.
-
-**Split test (structural, not numeric):** *Can I name ≥2 sub-questions that do NOT depend on each other's output, without forcing them?*
-
-- **Yes** → split, one call per sub-question.
-- **No** (including "only one real question, even if the prompt is long") → single prompt.
-
-If you have to strain to invent a second sub-question, the answer is no.
-
-Weigh one cost: each shard must be self-contained and restate project context, so N calls = N× cold-start setup on agy's side. Split when real independent parts exist *and* the parallelism is worth that overhead. Natural split points: per-symbol search, per-directory scan, per-layer (Domain / Infrastructure / tests), per-task in a multi-task refactor. Don't split when sub-questions are sequential — one feeds the next.
-
 ### How to delegate
 
 Pass a clear `prompt` (exactly what to find or analyze), the absolute `cwd`, and relevant paths in `files`. Await the JSON response and use the summary.
@@ -69,7 +56,6 @@ You're off the rails if:
 - You ran an **unbounded** `grep` / `git diff` / `git log` in-terminal instead of delegating. (Bounded ones — `-n 5`, `--stat`, a single-file diff — are fine to run directly.)
 - You read or held a large file in context to **audit or review** it instead of delegating.
 - You answered a consume trigger from memory instead of verifying — code changes.
-- You split a delegation you had to **strain** to find a second sub-question for. No independent parts means no parallel gain, just N× cold-start overhead.
 
 ### Rationalization table
 
@@ -82,7 +68,6 @@ You're off the rails if:
 | "I only need a small part of the file." | *Consuming* → delegate the whole file, let agy extract. *Editing* → read it locally; you need the source. |
 | "I'll just delegate this file I'm about to edit." | You'll edit from a summary, half-blind, and miss what it dropped. Operate-on stays local. |
 | "I'll delegate the review, then read the file to make the change." | If the review leads straight to an edit, read it once locally. Don't fetch it twice. |
-| "I'll split this to be safe." | If you couldn't name ≥2 independent sub-questions without forcing them, don't split. |
 
 ## JetBrains MCP — tool priority (PhpStorm, PyCharm, GoLand)
 
