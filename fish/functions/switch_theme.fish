@@ -79,6 +79,7 @@ function switch_theme --description "Switch system themes between dark and light
         set -f tealdeer_theme "$_dotfiles/tealdeer/theme-dark.toml"
         set -f glamour_style "$_dotfiles/glamour/dracula.json"
         set -f agy_color_scheme solarized dark
+        set -f jiratui_theme dracula
     else
         # Alucard Light palette
         set -f p_normal      1F1F1F
@@ -124,6 +125,7 @@ function switch_theme --description "Switch system themes between dark and light
         set -f tealdeer_theme "$_dotfiles/tealdeer/theme-light.toml"
         set -f glamour_style "$_dotfiles/glamour/alucard.json"
         set -f agy_color_scheme solarized light
+        set -f jiratui_theme solarized-light
     end
 
     # ---------------------------------------------------------------------------
@@ -271,6 +273,19 @@ function switch_theme --description "Switch system themes between dark and light
     if test -f "$_dotfiles/tealdeer/config-base.toml"
         mkdir -p "$HOME/.config/tealdeer"
         cat "$_dotfiles/tealdeer/config-base.toml" "$tealdeer_theme" > "$HOME/.config/tealdeer/config.toml"
+    end
+
+    # jiratui theme
+    set -l jiratui_cfg "$HOME/.config/jiratui/config.yaml"
+    if test -f "$jiratui_cfg"
+        set -l _jiratui_tmp (mktemp)
+        if grep -q "^theme:" "$jiratui_cfg"
+            string replace -r -- '^theme:.*' "theme: \"$jiratui_theme\"" < "$jiratui_cfg" > "$_jiratui_tmp"
+        else
+            cat "$jiratui_cfg" > "$_jiratui_tmp"
+            echo "theme: \"$jiratui_theme\"" >> "$_jiratui_tmp"
+        end
+        mv "$_jiratui_tmp" "$jiratui_cfg"
     end
 
     # Zellij theme (live hot-swap — Zellij reloads config.kdl automatically)

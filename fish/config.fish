@@ -59,6 +59,9 @@ if status is-interactive
     alias lzg="lazygit"
     alias lzd="lazydocker"
     alias lzs="lazysql"
+    alias jt1="jiratui ui -j 1 --search-on-startup"
+    alias jt2="jiratui ui -j 2 --search-on-startup"
+    alias jt3="jiratui ui -j 3 --search-on-startup"
 
     function y --description "Launch yazi and cd into the last directory on exit"
         set tmp (mktemp -t "yazi-cwd.XXXXXX")

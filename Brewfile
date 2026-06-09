@@ -31,6 +31,8 @@ brew "fastfetch"
 brew "gum"
 brew "glow"
 brew "tealdeer"
+brew "jiratui"
+brew "jira-cli"
 
 # ====================
 # Data Processors
