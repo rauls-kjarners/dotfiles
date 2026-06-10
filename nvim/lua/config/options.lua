@@ -20,3 +20,6 @@ vim.opt.showtabline = 0
 -- Disable conceal by default (prevents markdown lines from jumping when editing)
 -- You can still toggle it via <leader>uc
 vim.opt.conceallevel = 0
+
+-- Disable swap files (prevents annoying "Swap file already exists" prompts)
+vim.opt.swapfile = false

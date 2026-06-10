@@ -20,7 +20,7 @@ just setup
 
 ### What `just setup` does
 
-1. **Installs Tools** — Runs `brew bundle` to install core CLI utilities (`fish`, `neovim`, `lazygit`, `eza`, `bat`, `zellij`, etc.) and **Ghostty** (macOS only, via cask).
+1. **Installs Tools** — Runs `brew bundle` to install core CLI utilities (`fish`, `neovim`, `lazygit`, `eza`, `bat`, `zellij`, `slk`, `jiratui`, `jira-cli`, etc.) and **Ghostty** (macOS only, via cask).
 2. **Symlinks Configs** — Safely links `fish`, `nvim`, `.gitconfig`, `.ideavimrc`, and `~/.config/ghostty` into their proper places. `lazygit` config is generated per-theme into the OS-correct directory (`~/Library/Application Support/lazygit` on macOS, `~/.config/lazygit` on Linux). Zellij `config.kdl` is copied (not symlinked) so theme switching doesn't dirty the repo.
 3. **Builds bat Themes** — Compiles the custom Alucard bat/delta syntax theme.
 4. **Installs Fish Plugins** — Uses `fisher` to install Fish shell plugins and sets up the prompt.
@@ -48,21 +48,23 @@ Run any step independently if needed:
 
 Themes auto-switch to match the OS dark/light mode. No manual action needed after setup.
 
-| Slot                 | Dark (Dracula)       | Light (Alucard)      |
-| -------------------- | -------------------- | -------------------- |
-| Terminal (Ghostty)   | `Dracula` built-in   | `alucard` (custom)   |
-| Shell colors (fish)  | Dracula palette      | Alucard palette      |
-| Prompt (Hydro)       | Dracula palette      | Alucard palette      |
-| Fuzzy finder (fzf)   | Dracula palette      | Alucard palette      |
-| Multiplexer (Zellij) | `dracula` built-in   | `alucard` (custom)   |
-| Git diff (delta)     | Dracula syntax theme | Alucard syntax theme |
-| Git UI (lazygit)     | Dracula colors       | Alucard colors       |
-| File Manager (yazi)   | Dracula colors       | Alucard colors       |
-| Docker UI (lazydocker) | Dracula colors      | Alucard colors       |
-| Kubernetes TUI (k9s)  | Dracula skin         | Dracula skin         |
-| Disk monitor (btop)   | Dracula theme        | Alucard theme        |
-| Database CLI (pgcli)  | Dracula syntax       | Alucard syntax       |
-| tldr (tealdeer)       | Dracula syntax       | Alucard syntax       |
+| Slot                   | Dark (Dracula)       | Light (Alucard)      |
+| ---------------------- | -------------------- | -------------------- |
+| Terminal (Ghostty)     | `Dracula` built-in   | `alucard` (custom)   |
+| Shell colors (fish)    | Dracula palette      | Alucard palette      |
+| Prompt (Hydro)         | Dracula palette      | Alucard palette      |
+| Fuzzy finder (fzf)     | Dracula palette      | Alucard palette      |
+| Multiplexer (Zellij)   | `dracula` built-in   | `alucard` (custom)   |
+| Git diff (delta)       | Dracula syntax theme | Alucard syntax theme |
+| Git UI (lazygit)       | Dracula colors       | Alucard colors       |
+| File Manager (yazi)    | Dracula colors       | Alucard colors       |
+| Docker UI (lazydocker) | Dracula colors       | Alucard colors       |
+| Kubernetes TUI (k9s)   | Dracula skin         | Dracula skin         |
+| Disk monitor (btop)    | Dracula theme        | Alucard theme        |
+| Database CLI (pgcli)   | Dracula syntax       | Alucard syntax       |
+| tldr (tealdeer)        | Dracula syntax       | Alucard syntax       |
+
+| Jira TUI (jiratui) | `dracula` theme | `solarized-light` theme |
 
 Switching is handled by `switch_theme dark|light` (a fish function). It is called automatically on shell startup by reading the OS dark mode preference.
 

@@ -10,6 +10,9 @@ if type -q mise
     mise activate fish | source
 end
 
+# Force truecolor support inside Zellij for lipgloss apps (like slk)
+set -gx COLORTERM truecolor
+
 # Point Docker-compatible tools (lazydocker, k9s) to the Podman socket on Linux
 if test (uname) = Linux; and type -q podman
     set -gx DOCKER_HOST "unix:///run/user/(id -u)/podman/podman.sock"

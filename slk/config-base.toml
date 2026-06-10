@@ -1,0 +1,7 @@
+[notifications]
+enabled = true
+on_mention = true
+on_dm = true
+
+[appearance]
+theme = "dracula"

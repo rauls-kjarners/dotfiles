@@ -71,6 +71,11 @@ link:
     rm -rf ~/.config/ghostty
     ln -sfn {{justfile_directory()}}/ghostty ~/.config/ghostty
 
+    # Slk (slack TUI config)
+    mkdir -p ~/.config/slk
+    ln -sfn {{justfile_directory()}}/slk/themes ~/.config/slk/themes
+    if [ ! -f ~/.config/slk/config.toml ]; then cp {{justfile_directory()}}/slk/config-base.toml ~/.config/slk/config.toml; fi
+
     # Mise (global tool configuration)
     mkdir -p ~/.config/mise
     ln -sfn {{justfile_directory()}}/mise/config.toml ~/.config/mise/config.toml

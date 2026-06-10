@@ -80,6 +80,7 @@ function switch_theme --description "Switch system themes between dark and light
         set -f glamour_style "$_dotfiles/glamour/dracula.json"
         set -f agy_color_scheme solarized dark
         set -f jiratui_theme dracula
+
     else
         # Alucard Light palette
         set -f p_normal      1F1F1F
@@ -126,6 +127,7 @@ function switch_theme --description "Switch system themes between dark and light
         set -f glamour_style "$_dotfiles/glamour/alucard.json"
         set -f agy_color_scheme solarized light
         set -f jiratui_theme solarized-light
+
     end
 
     # ---------------------------------------------------------------------------
@@ -295,6 +297,8 @@ function switch_theme --description "Switch system themes between dark and light
         string replace -r -- '^theme .*' "theme \"$zellij_theme\"" < "$_zj_cfg" > "$_zj_tmp"
         mv "$_zj_tmp" "$_zj_cfg"
     end
+
+
 
     set -U _switch_theme_active "$theme"
     functions --erase _set_u _set_ux

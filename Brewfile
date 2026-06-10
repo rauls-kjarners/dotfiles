@@ -33,6 +33,8 @@ brew "glow"
 brew "tealdeer"
 brew "jiratui"
 brew "jira-cli"
+tap "gammons/tap"
+brew "slk"
 
 # ====================
 # Data Processors
