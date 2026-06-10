@@ -18,9 +18,9 @@
 
 When working in a project where `mcp__*__*` tools are exposed, prefer them over text/regex/shell tools per the rules below. Trust the exposed tool list — availability varies by JetBrains IDE build, plugins, and `idea_mcp_allowed_tools`. **If a tool named in these rules is not in the current session's exposed list, say so explicitly before falling back to grep/regex.** Tool names below are illustrative of a PHP/Symfony-oriented server and are not verified against every build's exposed set — treat unrecognized names per the escape-hatch above.
 
-1. **Semantic lookup first.** Start any class/method/function investigation with `mcp__*__search_symbol` → `mcp__*__get_symbol_info`. Only call `mcp__*__read_file` (or built-in `Read`) once the FQN and location are known. Never start with text/regex search for code identifiers.
+1. **Semantic lookup first.** Start any class/method/function investigation with `mcp__*__search_symbol` → `mcp__*__get_symbol_info`. Only call `mcp__*__read_file` (or built-in `Read`) once the FQN and location are known. Never start with text/regex search for code identifiers. `mcp__*__read_file` supports partial reads (line/range/offset/indentation modes, `max_lines`) — read only the known location, not whole files. `mcp__*__get_file_text_by_path` is the simpler project-relative variant when you only have a project-relative path; it also supports truncation modes but not fine-grained range selection.
 
-2. **Never text-replace identifiers.** Use `mcp__*__rename_refactoring` for any rename of a class, method, property, function, or constant. Follow with `mcp__*__search_text` to audit string literals that semantic rename misses — search for the **old** identifier name in framework route names, dependency injection container IDs (e.g., Symfony service IDs), template references (e.g., Twig, Jinja), and fully-qualified names in config files.
+2. **Never text-replace identifiers.** Use `mcp__*__rename_refactoring` for any rename of a class, method, property, function, or constant. Follow with `mcp__*__search_text` to audit string literals that semantic rename misses — search for the **old** identifier name in framework route names, dependency injection container IDs (e.g., Symfony service IDs), template references (e.g., Twig, Jinja), and fully-qualified names in config files. _(Some builds expose two search families: `search_text`/`search_regex` use glob `paths` and return match coordinates — prefer these for precision. `search_in_files_by_text`/`search_in_files_by_regex` use dir+fileMask and return IntelliJ `||`-marked snippets. Either satisfies the audit step.)_
 
 3. **Structural over regex for code patterns.** For syntax-shaped migrations or repeated code shapes (API rewrites, signature changes, decorator wraps), use `mcp__*__search_structural` instead of `mcp__*__search_regex`. Structural search respects language grammar; regex does not. Call `mcp__*__get_structural_patterns` first to discover valid pattern syntax before running a structural search.
 
@@ -28,17 +28,24 @@ When working in a project where `mcp__*__*` tools are exposed, prefer them over 
 
    **Write path.** Always use built-in `Edit`/`Write` for file changes — the harness tracks file state. Do not switch to `mcp__*__replace_text_in_file` or `mcp__*__create_new_file` to work around inspection lag; rule 4's "re-query once" already handles that. Note: built-in writes land on disk immediately; MCP inspections read the IDE's in-memory model and may lag a beat behind via file-watch — this is expected.
 
-5. **Bootstrap once per session for non-trivial edits.** Before significant code work, call the IDE's project config tools (e.g., `mcp__*__get_project_config` or `mcp__*__get_composer_dependencies`) + `mcp__*__get_run_configurations` (lists targets; `mcp__*__execute_run_configuration` runs them) so language version, packages, and named test/run targets are known. Cache mentally for the session.
+5. **Bootstrap once per session for non-trivial edits.** Before significant code work, call:
+   - `mcp__*__get_php_project_config` — PHP level, interpreter, extensions. The only source for remote/Docker interpreter details.
+   - `mcp__*__get_composer_dependencies` or `mcp__*__get_project_dependencies` — installed packages.
+   - `mcp__*__get_run_configurations` — lists named targets; `mcp__*__execute_run_configuration` runs them.
 
-6. **Framework navigation via MCP — prefer the narrowest tool.** Prefer dedicated MCP tools over grep (e.g., Symfony tools for PHP, or equivalent Django/FastAPI tools for Python). When the target is known, use the specific lookup; full-list tools dump everything and are token-heavy on large apps — use them only when genuinely exploring. *(Note: The list below contains PHP/Symfony examples; look for your framework's equivalent if using PyCharm or GoLand)*:
+   Cache language version, packages, and test/run targets mentally for the session.
+
+6. **Framework navigation via MCP — prefer the narrowest tool.** Prefer dedicated MCP tools over grep (e.g., Symfony tools for PHP, or equivalent Django/FastAPI tools for Python). When the target is known, use the specific lookup; full-list tools dump everything and are token-heavy on large apps — use them only when genuinely exploring. _(Note: The list below contains PHP/Symfony examples; look for your framework's equivalent if using PyCharm or GoLand)_:
    - `mcp__*__locate_symfony_service` — single service lookup (prefer over listing all)
    - `mcp__*__list_symfony_routes_url_controllers` — all routes (broad, use sparingly)
    - `mcp__*__list_doctrine_entities` — entity discovery
+   - `mcp__*__list_doctrine_entity_fields` — fields/columns/types/relations/enumType for one entity as CSV; prefer over reading XML mapping files
    - `mcp__*__find_files_by_glob` / `mcp__*__find_files_by_name_keyword` — lightweight file discovery; prefer over shell glob/find
+   - `mcp__*__list_directory_tree` — directory tree view; prefer over shell `ls`/`find` for exploring structure
 
 7. **Validation ladder after edits.**
    - **PHP / Python (not compiled):** `mcp__*__build_project` is an index/inspection sweep, not a compile check, and is project-wide (slow, token-heavy). Prefer static analysis (e.g., PHPStan / Pyright / mypy) via `mcp__*__execute_run_configuration` for cross-file type correctness.
-   - **Go (compiled):** `mcp__*__build_project` *is* a real compile check — use it for cross-package build/type errors; pair with `go vet` / staticcheck run configs.
+   - **Go (compiled):** `mcp__*__build_project` _is_ a real compile check — use it for cross-package build/type errors; pair with `go vet` / staticcheck run configs.
 
    Regardless of language:
    - **Static edit** (single file, no cross-file impact): `mcp__*__get_file_problems` or `mcp__*__get_inspections` on touched files.
@@ -51,13 +58,14 @@ When working in a project where `mcp__*__*` tools are exposed, prefer them over 
    - **PHP (Xdebug):** `mcp__*__xdebug_set_breakpoint` → `mcp__*__xdebug_run` / `mcp__*__xdebug_request` → `mcp__*__xdebug_eval` / `mcp__*__xdebug_context` / `mcp__*__xdebug_stack` → `mcp__*__xdebug_step_over` / `mcp__*__xdebug_step_into` / `mcp__*__xdebug_step_out` → `mcp__*__xdebug_stop`. For HTTP/controller behavior, inspect via `mcp__*__list_profiler_requests`.
    - **Python / Go:** Use the IDE's native debugger (PyCharm debugger / Delve in GoLand). If no `mcp__*__debug_*` tools are exposed, set breakpoints in the IDE and drive via a debug run configuration — do not assume `xdebug_*` exists.
 
-10. **Database inspection (read-only).** Use `mcp__*__list_database_schemas` / `mcp__*__list_schema_objects` / `mcp__*__get_database_object_description` / `mcp__*__preview_table_data` to inspect schema and data (verify migrations, check FK/enum constraints). `mcp__*__execute_sql_query` is allowed for read-only verification — never run writes through it; writes go through `make db-migrate` / fixtures.
+10. **Database inspection (read-only).** Start with `mcp__*__list_database_connections` to get the connection IDs required by other DB tools. Then use `mcp__*__list_database_schemas` / `mcp__*__list_schema_objects` / `mcp__*__get_database_object_description` / `mcp__*__preview_table_data` to inspect schema and data (verify migrations, check FK/enum constraints). `mcp__*__execute_sql_query` is allowed for read-only verification — never run writes through it; writes go through `make db-migrate` / fixtures.
 
 ### Tools to avoid
 
 - **`mcp__*__reformat_file`** — prefer using the project's dedicated CLI formatting tools (e.g., `black`, `gofmt`, `php-cs-fixer`) via the shell. IDE reformat can produce config drift.
 - **`mcp__*__execute_terminal_command`** — runs in the host IDE terminal. Prefer using standard shell tools directly rather than routing commands through the IDE, unless you specifically need to run a command within an IDE-managed container or environment.
 - **`mcp__*__apply_quick_fix`** — see rule 4 above.
+- **`mcp__*__invoke_ide_action`** — generic IDE-action driver (use `mcp__*__search_ide_actions` to discover action IDs first). Same risk class as `apply_quick_fix`: actions like ReformatCode/refactors run without diff preview. Use only for clearly safe, read-only or navigation actions (open a tool window, focus a file); never for bulk edits or refactors. Pass `filePaths` when targeting a specific file or folder — without it, file-focused actions may run globally or fail.
 
 ## Neovim MCP — Tool Priority
 
@@ -73,7 +81,7 @@ When working in a project where Neovim is running and `nvim-mcp` tools are expos
 
 4. **Inspections before guessing fixes.** After editing code, pull diagnostics via the Neovim MCP (e.g., fetching `vim.diagnostic.get()`) to surface issues. Read the diagnostics and patch manually. **Do not** blindly apply auto-fixes without previewing them. This trades away some safe fixes for safety; that tradeoff is intentional.
 
-5. **Validation ladder after edits.** 
+5. **Validation ladder after edits.**
    - **Static edit (single file, no cross-file impact):** Fetch diagnostics via Neovim MCP on touched files.
    - **Cross-file edit (rename, signature change, new dependency):** Fetch diagnostics on touched files + run project-wide static analysis (e.g., PHPStan, Pyright) via the shell + audit for the **old** identifier name in string literals.
    - **Behavior change (logic, control flow, new feature):** Run relevant test targets via the shell. Static analysis alone is never enough for behavior changes.
