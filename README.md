@@ -6,6 +6,7 @@ Cross-platform dotfiles for Linux and macOS, featuring a unified Dracula (dark) 
 
 1. Install [Homebrew](https://brew.sh/)
 2. Install the `just` command runner:
+
    ```sh
    brew install just
    ```
@@ -59,7 +60,6 @@ Themes auto-switch to match the OS dark/light mode. No manual action needed afte
 | Git UI (lazygit)       | Dracula colors       | Alucard colors       |
 | File Manager (yazi)    | Dracula colors       | Alucard colors       |
 | Docker UI (lazydocker) | Dracula colors       | Alucard colors       |
-| Kubernetes TUI (k9s)   | Dracula skin         | Dracula skin         |
 | Disk monitor (btop)    | Dracula theme        | Alucard theme        |
 | Database CLI (pgcli)   | Dracula syntax       | Alucard syntax       |
 | tldr (tealdeer)        | Dracula syntax       | Alucard syntax       |

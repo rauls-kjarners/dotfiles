@@ -191,7 +191,7 @@ nnoremap <leader>cp :action CopyReference<CR>
 "" --- GIT ---
 " nnoremap <leader>gg :action ActivateVersionControlToolWindow<CR>
 nnoremap <leader>gb :action Annotate<CR>
-nnoremap <leader>gg :action Lazygit.Toggle<CR>
+nnoremap <leader>gg :action LazyGit.Open<CR>
 
 "" --- TERMINAL / TEST ---
 nnoremap <leader>ft :action ActivateTerminalToolWindow<CR>

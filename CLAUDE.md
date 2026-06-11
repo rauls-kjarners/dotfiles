@@ -126,21 +126,23 @@ When working in a project where `mcp__*__*` tools are exposed, prefer them over 
 
 ## Neovim MCP — Tool Priority
 
-When working in a project where Neovim is running and `nvim-mcp` tools are exposed, prefer them over raw text/regex/shell tools per the rules below. Trust the exposed tool list — availability depends on Neovim's active LSP and Treesitter state. **If a tool named in these rules is not in the current session's exposed list, say so explicitly before falling back to grep/regex.**
+When working in a project where Neovim is running and `nvim` MCP tools are exposed, prefer them over raw text/regex/shell tools per the rules below. Trust the exposed tool list — availability depends on Neovim's active LSP and Treesitter state. **If a tool named in these rules is not in the current session's exposed list, say so explicitly before falling back to grep/regex.**
+
+If the `nvim` MCP tools are unavailable or failing, automatically reconstruct the socket path as `/tmp/nvim-$(basename "$PWD").sock` — this matches the naming convention set in `autocmds.lua`. Verify it exists with `test -S /tmp/nvim-$(basename "$PWD").sock`, then run `nvim --server "/tmp/nvim-$(basename "$PWD").sock" --remote-expr "expand('%:p')"` to get the currently open file.
 
 ### Rules
 
-1. **Semantic lookup first.** Start any class/method/function investigation with Neovim's MCP LSP tools (e.g., `workspace_symbol` or `definition`). Only call `read_file` once the file and location are known. Never start with text/regex search for identifiers.
+1. **Semantic lookup first.** Start any class/method/function investigation with Neovim's MCP LSP tools (`lsp_workspace_symbols` or `lsp_definition`). Only call `read` once the file and location are known. Never start with text/regex search for identifiers.
 
-2. **Never text-replace identifiers.** Use Neovim's LSP rename capability (if exposed via the MCP) for any rename of a class, method, property, function, or constant. Follow with a text search audit for string literals that semantic rename misses (e.g., config, templates, tags).
+2. **Never text-replace identifiers.** Use Neovim's `lsp_rename` tool for any rename of a class, method, property, function, or constant. Follow with a text search audit via the shell for string literals that semantic rename misses (e.g., config, templates, tags).
 
-3. **Structural over regex for patterns.** For syntax-shaped migrations or repeated code shapes (API rewrites, signature changes), prioritize Treesitter-backed tools or structural search tools (like `ast-grep`/`sg` in the shell) over raw `search_regex`. Structural search respects grammar; regex does not.
+3. **Structural over regex for patterns.** For syntax-shaped migrations or repeated code shapes (API rewrites, signature changes), prioritize shell structural search tools (like `ast-grep`/`sg`) over raw regex. Structural search respects grammar; regex does not.
 
-4. **Inspections before guessing fixes.** After editing code, pull diagnostics via the Neovim MCP (e.g., fetching `vim.diagnostic.get()`) to surface issues. Read the diagnostics and patch manually. **Do not** blindly apply auto-fixes without previewing them. This trades away some safe fixes for safety; that tradeoff is intentional.
+4. **Inspections before guessing fixes.** After editing code, pull diagnostics using `buffer_diagnostics` to surface issues in the current file. Read the diagnostics and patch manually. **Do not** blindly rely on auto-fixes.
 
 5. **Validation ladder after edits.**
-   - **Static edit (single file, no cross-file impact):** Fetch diagnostics via Neovim MCP on touched files.
-   - **Cross-file edit (rename, signature change, new dependency):** Fetch diagnostics on touched files + run project-wide static analysis (e.g., PHPStan, Pyright) via the shell + audit for the **old** identifier name in string literals.
+   - **Static edit (single file, no cross-file impact):** Fetch `buffer_diagnostics` via Neovim MCP on touched files.
+   - **Cross-file edit (rename, signature change, new dependency):** Fetch `buffer_diagnostics` on touched files + run project-wide static analysis (e.g., PHPStan, Pyright) via the shell + audit for the **old** identifier name in string literals.
    - **Behavior change (logic, control flow, new feature):** Run relevant test targets via the shell. Static analysis alone is never enough for behavior changes.
 
 6. **Framework navigation via Shell.** For framework-specific lookups, bypass Neovim MCP and use the specific framework CLI tool via the shell (e.g., `php bin/console debug:router` or `php bin/console debug:container`).

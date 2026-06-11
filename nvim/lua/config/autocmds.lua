@@ -46,3 +46,16 @@ vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
     end
   end,
 })
+
+-- Auto-start a project-specific socket for the AI agent
+local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':t')
+local socket_path = '/tmp/nvim-' .. project_name .. '.sock'
+pcall(vim.fn.serverstart, socket_path)
+
+-- Disable conceal for markdown files to stop text from jumping
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "markdown.mdx" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})
