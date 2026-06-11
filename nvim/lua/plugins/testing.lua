@@ -6,7 +6,6 @@ return {
     "nvim-neotest/neotest",
     dependencies = {
       "olimorris/neotest-phpunit",
-      "theutz/neotest-pest",
     },
     keys = {
       { "<leader>tF", function() require("neotest").run.run({status = "failed"}) end, desc = "Run Failed Tests (Neotest)" },
@@ -21,17 +20,23 @@ return {
     },
     opts = function(_, opts)
       opts.adapters = opts.adapters or {}
+      opts.discovery = {
+        concurrent = 0,
+        filter_dir = function(name, rel_path, root)
+          return rel_path == "tests" or string.match(rel_path, "^tests/") ~= nil
+        end,
+      }
       vim.list_extend(opts.adapters, {
         require("neotest-phpunit")({
           phpunit_cmd = function()
-            if vim.fn.filereadable("vendor/bin/paratest") == 1 then
-              local processes = vim.g.paratest_processes or 6
-              return "vendor/bin/paratest --processes=" .. processes
-            end
-            return "vendor/bin/phpunit"
+            return vim.fn.expand("~/.local/bin/neotest-remote")
+          end,
+          env = function()
+            return {
+              PARATEST_PROCESSES = tostring(vim.g.paratest_processes or 6)
+            }
           end,
         }),
-        require("neotest-pest"),
       })
       return opts
     end,

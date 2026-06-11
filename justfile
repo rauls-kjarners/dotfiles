@@ -80,6 +80,11 @@ link:
     mkdir -p ~/.config/mise
     ln -sfn {{justfile_directory()}}/mise/config.toml ~/.config/mise/config.toml
 
+    # Neotest Docker wrapper (project-agnostic path mapper for running tests in Docker)
+    mkdir -p ~/.local/bin
+    ln -sfn {{justfile_directory()}}/bin/neotest-remote ~/.local/bin/neotest-remote
+    chmod +x {{justfile_directory()}}/bin/neotest-remote
+
     just bat-themes
 
 # Build custom bat syntax themes (Alucard + any others in bat/themes/)
