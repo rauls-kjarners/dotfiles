@@ -118,13 +118,6 @@ Config is symlinked to `~/.config/ghostty` by `just link`. Theme auto-switches w
 - **Light theme:** Alucard (custom, from `ghostty/themes/alucard`)
 - **Pane management:** handled by Zellij (see Zellij section above)
 
-> **Bazzite note:** Ghostty has no Flatpak. Install via Distrobox:
->
-> ```sh
-> distrobox create -n ghostty-box -i fedora:latest
-> distrobox enter ghostty-box -- bash -c "sudo dnf copr enable pgdev/ghostty -y && sudo dnf install ghostty -y && distrobox-export --app ghostty"
-> ```
-
 ## Neovim (PHP & Web IDE)
 
 The Neovim configuration acts as a JetBrains replacement. Most tools install automatically via Homebrew, Lazy.nvim, and Mason. A few language servers require manual installation.
@@ -137,13 +130,11 @@ If missing, Neovim gracefully ignores them without errors — but you'll miss ID
 
 **PHPantom** _(highest priority — extremely fast, Rust-based)_
 
-- Download from [PHPantom Releases](https://github.com/PHPantom-dev/phpantom_lsp/releases)
-- Place `phpantom_lsp` in your `$PATH` (e.g. `~/.local/bin/`)
+- Automatically installed via `mise` (`github:PHPantom-dev/phpantom_lsp`).
 
 **php-lsp** _(fast alternative, Rust-based)_
 
-- Download from [php-lsp Releases](https://github.com/jorgsowa/php-lsp/releases)
-- Place `php-lsp` in your `$PATH`
+- Automatically installed via `mise` (`github:jorgsowa/php-lsp`).
 
 **Phpactor** _(refactoring — runs alongside PHPantom with diagnostics disabled)_
 
@@ -156,8 +147,9 @@ Provides autocompletion and hover support for `.twig` files.
 
 - Handled completely by `mason.nvim`. No need to install globally via npm!
 
-### AI & Claude Code
+### AI Assistants
 
+- **Antigravity (agy)**: Used as the primary AI coding assistant CLI. Run the `agy` command natively in a Zellij split pane next to Neovim. `agy` automatically detects the Neovim socket (`/tmp/nvim-*.sock`) and connects securely via MCP without requiring any third-party Neovim wrapper plugins.
 - **claudecode.nvim**: Integrates the Claude Code CLI directly into Neovim. Use `<leader>ac` to toggle Claude, `<leader>as` to send buffers/selections, and `<leader>aa` / `<leader>ad` to accept/deny diffs.
 - **nvim-mcp**: A Rust-based MCP server that allows Claude to read your Neovim buffers and use its LSP securely. The binary is compiled automatically by Lazy.nvim, but you must register it with Claude Code by running `just install-nvim-mcp` manually.
 - **Copilot**: GitHub Copilot is enabled for inline code suggestions.
