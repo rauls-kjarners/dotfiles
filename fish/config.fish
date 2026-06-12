@@ -3,8 +3,17 @@ if test -d /home/linuxbrew/.linuxbrew
     eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
-# Add ~/.local/bin to PATH for external tools (phpantom, php-lsp, etc)
+# Add ~/.local/bin to PATH for external tools (php-lsp, etc)
 fish_add_path -g ~/.local/bin
+
+# Add Homebrew's keg-only libpq to PATH (for psql / vim-dadbod)
+if test -d /opt/homebrew/opt/libpq/bin
+    fish_add_path -g /opt/homebrew/opt/libpq/bin
+else if test -d /usr/local/opt/libpq/bin
+    fish_add_path -g /usr/local/opt/libpq/bin
+else if test -d /home/linuxbrew/.linuxbrew/opt/libpq/bin
+    fish_add_path -g /home/linuxbrew/.linuxbrew/opt/libpq/bin
+end
 
 if type -q mise
     mise activate fish | source

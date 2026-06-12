@@ -57,5 +57,6 @@ brew "k9s"
 # ====================
 brew "lazysql"
 brew "pgcli"
+brew "libpq"
 brew "sqlite"
 brew "redis"

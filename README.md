@@ -126,20 +126,19 @@ If missing, Neovim gracefully ignores them without errors — but you'll miss ID
 
 ### PHP Language Servers
 
-**PHPantom** and **Phpactor** run together: PHPantom handles diagnostics (fast), Phpactor provides refactoring actions. **php-lsp** only starts if PHPantom is absent. Priority for diagnostics: **PHPantom** > **php-lsp**. You can hot-swap (e.g., `:LspStop phpantom` then `:LspStart php-lsp`).
+**php-lsp** and **Phpactor** run together: **php-lsp** handles diagnostics (fast), **Phpactor** provides refactoring actions. **intelephense** is configured as a fallback and only starts if **php-lsp** is absent.
 
-**PHPantom** _(highest priority — extremely fast, Rust-based)_
-
-- Automatically installed via `mise` (`github:PHPantom-dev/phpantom_lsp`).
-
-**php-lsp** _(fast alternative, Rust-based)_
+**php-lsp** _(highest priority — fast, Rust-based)_
 
 - Automatically installed via `mise` (`github:jorgsowa/php-lsp`).
 
-**Phpactor** _(refactoring — runs alongside PHPantom with diagnostics disabled)_
+**intelephense** _(fallback alternative, standard Node-based PHP LSP)_
+
+- Handled by LazyVim defaults if `php-lsp` is not installed.
+
+**Phpactor** _(refactoring — runs alongside php-lsp/intelephense with diagnostics disabled)_
 
 - Handled completely by `mason.nvim`.
-- Note on Code Actions: Phpactor's code actions are separated to avoid UI bloat. Use `<leader>ca` for fast, standard code actions. Use `<leader>cp` specifically to access Phpactor's advanced refactoring tools.
 
 ### Twiggy (Symfony Twig templates)
 

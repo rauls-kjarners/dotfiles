@@ -1,5 +1,4 @@
 [tools]
 node = "lts"
 rust = "latest"
-"github:PHPantom-dev/phpantom_lsp" = "latest"
-"github:jorgsowa/php-lsp" = "latest"
+# "github:jorgsowa/php-lsp" = "latest"

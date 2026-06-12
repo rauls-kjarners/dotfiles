@@ -1,60 +1,57 @@
--- PHP language tooling
--- PHPantom (primary LSP) + phpactor (refactorings only) + PHPStan + php-cs-fixer
+-- php-lsp (primary) or intelephense (fallback) + phpactor (refactorings only)
 
 return {
-  -- 1. LSP: PHPantom (primary) + phpactor (refactorings, no diagnostics)
+  -- 1. LSP: php-lsp (primary), intelephense (fallback) + phpactor (refactorings, no diagnostics)
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local has_phpantom = vim.fn.exepath("phpantom_lsp") ~= ""
       local has_phplsp = vim.fn.exepath("php-lsp") ~= ""
 
       opts.servers = opts.servers or {}
 
-      -- Disable the LazyVim default
-      opts.servers.intelephense = { enabled = false }
-
-      -- PHPantom: highest priority
-      if has_phpantom then
-        opts.servers.phpantom = {
-          cmd = { "phpantom_lsp", "--stdio" },
-          filetypes = { "php" },
-          root_dir = require("lspconfig.util").root_pattern("composer.json", ".git"),
-          single_file_support = true,
-        }
-      end
-
-      -- php-lsp: register but only autostart if phpantom is missing
       if has_phplsp then
+        -- Disable the LazyVim default intelephense
+        opts.servers.intelephense = { enabled = false }
+
         opts.servers["php-lsp"] = {
           cmd = { "php-lsp" },
           filetypes = { "php" },
           root_dir = require("lspconfig.util").root_pattern("composer.json", ".git"),
-          autostart = not has_phpantom,
+          autostart = true,
+        }
+      else
+        -- intelephense: fallback if php-lsp is not present
+        opts.servers.intelephense = opts.servers.intelephense or {}
+        opts.servers.intelephense.enabled = true
+        opts.servers.intelephense.settings = {
+          intelephense = {
+            environment = {
+              includePaths = {
+                "vendor/rector/rector/vendor/rector",
+              },
+            },
+          },
         }
       end
 
       opts.setup = opts.setup or {}
-      local function register_custom_lsp(name)
-        opts.setup[name] = function(_, server_opts)
-          local configs = require("lspconfig.configs")
-          if not configs[name] then
-            configs[name] = { default_config = server_opts }
-          end
-          require("lspconfig")[name].setup(server_opts)
-          return true
+      opts.setup["php-lsp"] = function(_, server_opts)
+        local configs = require("lspconfig.configs")
+        if not configs["php-lsp"] then
+          configs["php-lsp"] = { default_config = server_opts }
         end
+        require("lspconfig")["php-lsp"].setup(server_opts)
+        return true
       end
-      register_custom_lsp("phpantom")
-      register_custom_lsp("php-lsp")
 
       -- phpactor: managed by Mason, unconditionally register to ensure installation
-      local is_fallback = not has_phpantom and not has_phplsp
       opts.servers.phpactor = {
         autostart = true,
-        init_options = is_fallback and {} or {
+        init_options = {
           ["language_server_phpstan.enabled"] = false,
           ["language_server_psalm.enabled"] = false,
+          ["php_code_sniffer.enabled"] = false,
+          ["language_server_php_cs_fixer.enabled"] = false,
           ["language_server.diagnostics_on_update"] = false,
           ["language_server.diagnostics_on_save"] = false,
           ["language_server.diagnostics_on_open"] = false,
@@ -62,7 +59,6 @@ return {
       }
 
       -- Autocommand to split Code Actions and disable phpactor bloat
-      local strip_phpactor = has_phpantom or has_phplsp
       local has_phpactor = vim.fn.exepath("phpactor") ~= ""
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("php_lsp_tweaks", { clear = true }),
@@ -70,8 +66,8 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           local bufnr = args.buf
 
-          -- Only cripple phpactor when a primary LSP is present; in fallback mode it's the sole server
-          if client and client.name == "phpactor" and strip_phpactor then
+          -- Cripple phpactor so it doesn't conflict with intelephense/php-lsp
+          if client and client.name == "phpactor" then
             client.server_capabilities.completionProvider = false
             client.server_capabilities.hoverProvider = false
             client.server_capabilities.documentFormattingProvider = false
@@ -79,31 +75,24 @@ return {
             client.server_capabilities.definitionProvider = false
             client.server_capabilities.referencesProvider = false
             client.server_capabilities.renameProvider = false
+            client.server_capabilities.diagnosticProvider = false
+            -- Additional capabilities stripped to prevent any double UX with primary LSP
+            client.server_capabilities.documentHighlightProvider = false
+            client.server_capabilities.documentSymbolProvider = false
+            client.server_capabilities.implementationProvider = false
+            client.server_capabilities.inlineValueProvider = false
+            client.server_capabilities.selectionRangeProvider = false
+            client.server_capabilities.signatureHelpProvider = false
+            client.server_capabilities.typeDefinitionProvider = false
+            client.server_capabilities.workspaceSymbolProvider = false
           end
 
-          if vim.bo[bufnr].filetype == "php" then
-            -- Buffer-local maps beat global ones; no defer needed
-            vim.keymap.set({ "n", "v" }, "<leader>ca", function()
-              vim.lsp.buf.code_action({
-                filter = function(_, cid)
-                  local c = vim.lsp.get_client_by_id(cid)
-                  return c and c.name ~= "phpactor"
-                end
-              })
-            end, { buffer = bufnr, desc = "Code Action (Fast)" })
-
-            -- <leader>cp = phpactor refactorings only; only bind when phpactor is installed
-            if has_phpactor and strip_phpactor then
-              vim.keymap.set({ "n", "v" }, "<leader>cp", function()
-                vim.lsp.buf.code_action({
-                  filter = function(_, cid)
-                    local c = vim.lsp.get_client_by_id(cid)
-                    return c and c.name == "phpactor"
-                  end
-                })
-              end, { buffer = bufnr, desc = "Refactor (phpactor)" })
-            end
+          -- Disable pull diagnostics for php-lsp to prevent duplicate push/pull diagnostics
+          if client and client.name == "php-lsp" then
+            client.server_capabilities.diagnosticProvider = false
           end
+
+
         end,
       })
 
@@ -111,12 +100,12 @@ return {
     end,
   },
 
-  -- 2. PHPStan as diagnostics layer (via nvim-lint)
+  -- 2. Disable default phpcs linter
   {
     "mfussenegger/nvim-lint",
     opts = function(_, opts)
       opts.linters_by_ft = opts.linters_by_ft or {}
-      opts.linters_by_ft.php = { "phpstan" }
+      opts.linters_by_ft.php = {}
       return opts
     end,
   },

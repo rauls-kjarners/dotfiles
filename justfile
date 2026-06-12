@@ -152,7 +152,7 @@ linux-setup:
     unzip -o -q /tmp/JetBrainsMono.zip -d "$FONT_DIR"
     rm /tmp/JetBrainsMono.zip
     fc-cache -fv
-    # Note: install Ghostty on Bazzite via Distrobox (see README)
+    # Note: install Ghostty natively on immutable Linux hosts via rpm-ostree (do NOT use Distrobox)
 
     if command -v podman > /dev/null; then
         echo "Enabling Podman socket (for lazydocker/k9s compatibility)..."

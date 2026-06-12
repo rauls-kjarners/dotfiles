@@ -25,9 +25,14 @@ pcall(vim.keymap.del, "n", "<S-l>")
 map("n", "<S-l>", "<cmd>bprev<cr>", { desc = "Prev Buffer" })
 map("n", "<S-k>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 
--- Terminal window navigation
-map("t", "<C-j>", "<cmd>wincmd h<cr>", { desc = "Go to Left Window" })
-map("t", "<C-k>", "<cmd>wincmd j<cr>", { desc = "Go to Lower Window" })
-map("t", "<C-l>", "<cmd>wincmd k<cr>", { desc = "Go to Upper Window" })
-map("t", "<C-;>", "<cmd>wincmd l<cr>", { desc = "Go to Right Window" })
+-- Terminal window navigation (Enforced buffer-locally to prevent interception)
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = vim.api.nvim_create_augroup("custom-term-nav", { clear = true }),
+  callback = function()
+    vim.keymap.set("t", "<C-j>", "<cmd>wincmd h<cr>", { buffer = 0, desc = "Go to Left Window" })
+    vim.keymap.set("t", "<C-k>", "<cmd>wincmd j<cr>", { buffer = 0, desc = "Go to Lower Window" })
+    vim.keymap.set("t", "<C-l>", "<cmd>wincmd k<cr>", { buffer = 0, desc = "Go to Upper Window" })
+    vim.keymap.set("t", "<C-;>", "<cmd>wincmd l<cr>", { buffer = 0, desc = "Go to Right Window" })
+  end,
+})
 pcall(vim.keymap.del, "t", "<C-h>")
