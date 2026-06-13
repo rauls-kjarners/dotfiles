@@ -34,6 +34,7 @@ brew "tealdeer"
 brew "jiratui"
 brew "jira-cli"
 brew "gammons/tap/slk"
+brew "pngpaste"
 
 # ====================
 # Data Processors

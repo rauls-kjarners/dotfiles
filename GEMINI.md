@@ -71,7 +71,11 @@ When working in a project where `mcp__*__*` tools are exposed, prefer them over 
 
 When working in a project where Neovim is running and `nvim` MCP tools are exposed, prefer them over raw text/regex/shell tools per the rules below. Trust the exposed tool list — availability depends on Neovim's active LSP and Treesitter state. **If a tool named in these rules is not in the current session's exposed list, say so explicitly before falling back to grep/regex.**
 
-If the `nvim` MCP tools are unavailable or failing, automatically reconstruct the socket path as `/tmp/nvim-$(basename "$PWD").sock` — this matches the naming convention set in `autocmds.lua`. Verify it exists with `test -S /tmp/nvim-$(basename "$PWD").sock`, then run `nvim --server "/tmp/nvim-$(basename "$PWD").sock" --remote-expr "expand('%:p')"` to get the currently open file.
+**Connection is automatic — no manual discovery needed.** The nvim-mcp server runs with `--connect auto` and auto-connects at startup. Workflow:
+
+1. Read the `nvim-connections://` MCP resource (JSON: `[{id, target}]`) and use `id` as the `connection_id`. **Never** call `get_targets` or shell out to `nvim --server … --remote-expr`.
+2. If `nvim-connections://` is empty (MCP server started before nvim opened its socket): call the `connect` tool with target `/tmp/nvim-<cwd-basename>.sock`, then re-read the resource. This is the only permitted recovery step.
+3. If `connect` also fails: Neovim is not running for this project — say so and ask the user to start it.
 
 ### Rules
 
