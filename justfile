@@ -90,6 +90,10 @@ link:
     rm -f ~/.config/tridactyl/tridactylrc
     cp {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
 
+    # Obsidian (markdown-oxide config)
+    mkdir -p ~/OneDrive/vaults/main
+    ln -sfn {{justfile_directory()}}/obsidian/moxide.toml ~/OneDrive/vaults/main/.moxide.toml
+
     just bat-themes
 
 # Build custom bat syntax themes (Alucard + any others in bat/themes/)

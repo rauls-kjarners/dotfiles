@@ -42,7 +42,7 @@ set searchurls.i http://www.imdb.com/find?s=all&q=%s
 " --- Exclusions ---
 " Automatically disable Tridactyl on these sites
 blacklistadd mail.google.com
-blacklistadd www.vim-hero.com
+blacklistadd vim-hero.com
 
 " --- Search & Hints ---
 " Use left-hand keys for hints to avoid conflicts with our jkl; keymaps on the right hand!

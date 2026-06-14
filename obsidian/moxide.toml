@@ -1,0 +1,9 @@
+# markdown-oxide configuration
+# Matches obsidian.nvim settings
+
+# Where new files are created when you resolve an unresolved link using Oxide
+new_file_folder_path = "."
+
+# Matches your obsidian.nvim daily_notes.folder setting
+daily_notes_folder = "dailies"
+dailynote = "%Y-%m-%d"
