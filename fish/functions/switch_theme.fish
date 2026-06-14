@@ -20,7 +20,7 @@ function switch_theme --description "Switch system themes between dark and light
 
     # Resolve the dotfiles repo path from this file's real location (it is symlinked
     # into ~/.config/fish/functions/, so resolve through the link).
-    set -l _dotfiles (realpath (status dirname)/../..)
+    set -l _dotfiles (realpath (dirname (realpath (status filename)))/../..)
 
     # Use the global user gitconfig (not the tracked dotfile repo copy)
     set -l gitconfig "$HOME/.gitconfig"
@@ -80,6 +80,7 @@ function switch_theme --description "Switch system themes between dark and light
         set -f glamour_style "$_dotfiles/glamour/dracula.json"
         set -f agy_color_scheme solarized dark
         set -f jiratui_theme dracula
+        set -f tridactyl_theme dracula
 
     else
         # Alucard Light palette
@@ -127,6 +128,7 @@ function switch_theme --description "Switch system themes between dark and light
         set -f glamour_style "$_dotfiles/glamour/alucard.json"
         set -f agy_color_scheme solarized light
         set -f jiratui_theme solarized-light
+        set -f tridactyl_theme alucard
 
     end
 
@@ -231,11 +233,14 @@ function switch_theme --description "Switch system themes between dark and light
         set -l _btop_tmp (mktemp)
         if grep -q "^color_theme =" "$HOME/.config/btop/btop.conf"
             string replace -r -- '^color_theme = .*' "color_theme = \"$btop_theme\"" < "$HOME/.config/btop/btop.conf" > "$_btop_tmp"
+            mv "$_btop_tmp" "$HOME/.config/btop/btop.conf"
         else
-            cat "$HOME/.config/btop/btop.conf" > "$_btop_tmp"
-            echo "color_theme = \"$btop_theme\"" >> "$_btop_tmp"
+            if cat "$HOME/.config/btop/btop.conf" > "$_btop_tmp"; and echo "color_theme = \"$btop_theme\"" >> "$_btop_tmp"
+                mv "$_btop_tmp" "$HOME/.config/btop/btop.conf"
+            else
+                rm -f "$_btop_tmp"
+            end
         end
-        mv "$_btop_tmp" "$HOME/.config/btop/btop.conf"
     else
         echo "color_theme = \"$btop_theme\"" > "$HOME/.config/btop/btop.conf"
     end
@@ -250,15 +255,19 @@ function switch_theme --description "Switch system themes between dark and light
         if grep -q "skin:" "$k9s_dir/config.yaml"
             # skin: key exists — replace it
             string replace -r -- 'skin: .*' "skin: $k9s_skin" < "$k9s_dir/config.yaml" > "$_k9s_tmp"
+            mv "$_k9s_tmp" "$k9s_dir/config.yaml"
         else
             # No skin: line — insert after 'ui:' if present, or append ui+skin block if absent
-            awk -v skin="$k9s_skin" '
+            if awk -v skin="$k9s_skin" '
                 /^  ui:/ { print; print "    skin: " skin; injected=1; next }
                 { print }
                 END { if (!injected) { print "  ui:"; print "    skin: " skin } }
             ' "$k9s_dir/config.yaml" > "$_k9s_tmp"
+                mv "$_k9s_tmp" "$k9s_dir/config.yaml"
+            else
+                rm -f "$_k9s_tmp"
+            end
         end
-        mv "$_k9s_tmp" "$k9s_dir/config.yaml"
     else
         echo "k9s:
   ui:
@@ -283,11 +292,14 @@ function switch_theme --description "Switch system themes between dark and light
         set -l _jiratui_tmp (mktemp)
         if grep -q "^theme:" "$jiratui_cfg"
             string replace -r -- '^theme:.*' "theme: \"$jiratui_theme\"" < "$jiratui_cfg" > "$_jiratui_tmp"
+            mv "$_jiratui_tmp" "$jiratui_cfg"
         else
-            cat "$jiratui_cfg" > "$_jiratui_tmp"
-            echo "theme: \"$jiratui_theme\"" >> "$_jiratui_tmp"
+            if cat "$jiratui_cfg" > "$_jiratui_tmp"; and echo "theme: \"$jiratui_theme\"" >> "$_jiratui_tmp"
+                mv "$_jiratui_tmp" "$jiratui_cfg"
+            else
+                rm -f "$_jiratui_tmp"
+            end
         end
-        mv "$_jiratui_tmp" "$jiratui_cfg"
     end
 
     # Zellij theme (live hot-swap — Zellij reloads config.kdl automatically)
@@ -297,7 +309,32 @@ function switch_theme --description "Switch system themes between dark and light
         string replace -r -- '^theme .*' "theme \"$zellij_theme\"" < "$_zj_cfg" > "$_zj_tmp"
         mv "$_zj_tmp" "$_zj_cfg"
     end
-
+    # Tridactyl theme (inject customthemes inline to avoid CSP/local-file-read issues;
+    # write to the deploy copy, never the repo source — mirrors zellij/lazygit)
+    set -l tridactyl_cfg "$HOME/.config/tridactyl/tridactylrc"
+    set -l theme_css "$_dotfiles/tridactyl/themes/$tridactyl_theme.css"
+    if test -f "$tridactyl_cfg"; and test -f "$theme_css"
+        set -l css_content (tr -d '\n' < "$theme_css")
+        set -l _tridactyl_tmp (mktemp)
+        # CSS goes via ENVIRON (read literally) not awk -v, which would process
+        # C escapes (\n \t \\) and silently mangle any backslash in theme CSS.
+        if TRIDACTYL_CSS="$css_content" awk -v t="$tridactyl_theme" '
+            BEGIN { c = ENVIRON["TRIDACTYL_CSS"] }
+            /^set customthemes\./ { next }
+            /^colorscheme / {
+                print "set customthemes." t " " c
+                print "colorscheme " t
+                injected=1
+                next
+            }
+            { print }
+            END { if (!injected) { print "set customthemes." t " " c; print "colorscheme " t } }
+        ' < "$tridactyl_cfg" > "$_tridactyl_tmp"
+            mv "$_tridactyl_tmp" "$tridactyl_cfg"
+        else
+            rm -f "$_tridactyl_tmp"
+        end
+    end
 
 
     set -U _switch_theme_active "$theme"

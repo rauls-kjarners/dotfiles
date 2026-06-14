@@ -63,6 +63,7 @@ Themes auto-switch to match the OS dark/light mode. No manual action needed afte
 | Disk monitor (btop)    | Dracula theme        | Alucard theme        |
 | Database CLI (pgcli)   | Dracula syntax       | Alucard syntax       |
 | tldr (tealdeer)        | Dracula syntax       | Alucard syntax       |
+| Browser (Tridactyl)    | Dracula theme        | Alucard theme        |
 
 | Jira TUI (jiratui) | `dracula` theme | `solarized-light` theme |
 
@@ -117,6 +118,16 @@ Config is symlinked to `~/.config/ghostty` by `just link`. Theme auto-switches w
 - **Dark theme:** Dracula (built-in)
 - **Light theme:** Alucard (custom, from `ghostty/themes/alucard`)
 - **Pane management:** handled by Zellij (see Zellij section above)
+
+## Browser (Tridactyl)
+
+Tridactyl is used to bring Neovim-like keyboard navigation to Zen Browser/Firefox.
+Config is symlinked to `~/.config/tridactyl/tridactylrc` by `just link`.
+
+- **Theme**: Auto-switches between Dracula (dark) and Alucard (light) via `switch_theme`.
+- **Movement**: Re-mapped to `j=left`, `k=down`, `l=up`, `;=right` for ergonomic home-row usage.
+- **External Editor**: The `<C-i>` shortcut in any text box will pop open a temporary Ghostty window running Neovim (with your fish shell `$PATH` and LSPs enabled), allowing you to write web comments using real Neovim.
+- **Hints**: Bound exclusively to the left-hand keys (`sadfqewcxz`) so your right hand never has to leave the movement keys while browsing.
 
 ## Neovim (PHP & Web IDE)
 

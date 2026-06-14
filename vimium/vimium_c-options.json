@@ -1,0 +1,26 @@
+{
+  "name": "Vimium C",
+  "@time": "14/06/2026, 11:48:34",
+  "time": 1781426914209,
+  "environment": {
+    "extension": "2.12.2",
+    "platform": "mac",
+    "chromium": 148
+  },
+  "keyLayout": 2,
+  "vimSync": true,
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://mail.google.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://www.vim-hero.com/*"
+    }
+  ],
+  "keyMappings": "unmap h\nunmap H\nunmap zH\nunmap zL\n\nmap j scrollLeft\nmap k scrollDown\nmap l scrollUp\nmap ; scrollRight\n\nmap zj scrollToLeft\nmap z; scrollToRight\n\nmap J goBack\nmap : goForward\n\nmap L previousTab\nmap K nextTab",
+  "searchEngines": "w: https://www.wikipedia.org/w/index.php?title=Special:Search&search=%s Wikipedia\ng: https://www.google.com/search?q=%s Google\n# l: https://www.google.com/search?q=%s&btnI I'm feeling lucky...\ny: https://www.youtube.com/results?search_query=%s Youtube\ngm: https://www.google.com/maps?q=%s Google maps\n# b: https://www.bing.com/search?q=%s Bing\n# d: https://duckduckgo.com/?q=%s DuckDuckGo\naz: https://www.amazon.de/s/?field-keywords=%s Amazon.de\n# qw: https://www.qwant.com/?q=%s Qwant\ngi: https://www.google.com/search?tbm=isch&q=%s Google Images\ngd: https://drive.google.com/drive/search?q=%s Google Drive\ngh: https://www.github.com/search?q=%s GitHub\ni: http://www.imdb.com/find?s=all&q=%s IMDB",
+  "searchUrl": "https://www.google.com/search?q=%s Google",
+  "userDefinedCss": ":root {\n  /* Dracula Classic */\n  --bg: #282a36;\n  --fg: #f8f8f2;\n  --bg-secondary: #44475a;\n  --selection: #6272a4;\n  --comment: #6272a4;\n  --red: #ff5555;\n  --orange: #ffb86c;\n  --yellow: #f1fa8c;\n  --green: #50fa7b;\n  --cyan: #8be9fd;\n  --purple: #bd93f9;\n  --pink: #ff79c6;\n  --shadow: rgba(0, 0, 0, 0.4);\n}\n@media (prefers-color-scheme: light) {\n  :root {\n    /* Alucard Classic */\n    --bg: #fffbeb;\n    --fg: #1f1f1f;\n    --bg-secondary: #cfcfde;\n    --selection: #cfcfde;\n    --comment: #6c664b;\n    --red: #cb3a2a;\n    --orange: #a34d14;\n    --yellow: #846e15;\n    --green: #14710a;\n    --cyan: #036a96;\n    --purple: #644ac9;\n    --pink: #a3144d;\n    --shadow: rgba(0, 0, 0, 0.15);\n  }\n}\n\n/* Hint boxes \u2014 injected into page shadow root */\n.LH {\n  background: var(--bg);\n  font-size: 12px;\n  border: 0.25em solid var(--orange);\n  border-radius: 0.34em;\n  box-shadow: 0 0.1em 0.6em 0.1em var(--shadow);\n}\n.LH > span {\n  color: var(--fg);\n  font-size: inherit;\n  text-shadow: none;\n}\n.LH .MC {\n  color: var(--comment);\n}\n/* HUD */\n.HUD:after {\n  background: var(--bg) !important;\n  border: 1px solid var(--comment) !important;\n}\n.HUD.D:after {\n  background: var(--bg) !important;\n}\n\n/* #omni */\n:root {\n  /* Dracula Classic */\n  --bg: #282a36;\n  --fg: #f8f8f2;\n  --bg-secondary: #44475a;\n  --selection: #6272a4;\n  --comment: #6272a4;\n  --red: #ff5555;\n  --orange: #ffb86c;\n  --yellow: #f1fa8c;\n  --green: #50fa7b;\n  --cyan: #8be9fd;\n  --purple: #bd93f9;\n  --pink: #ff79c6;\n  --shadow: rgba(0, 0, 0, 0.4);\n}\n@media (prefers-color-scheme: light) {\n  :root {\n    /* Alucard Classic */\n    --bg: #fffbeb;\n    --fg: #1f1f1f;\n    --bg-secondary: #cfcfde;\n    --selection: #cfcfde;\n    --comment: #6c664b;\n    --red: #cb3a2a;\n    --orange: #a34d14;\n    --yellow: #846e15;\n    --green: #14710a;\n    --cyan: #036a96;\n    --purple: #644ac9;\n    --pink: #a3144d;\n    --shadow: rgba(0, 0, 0, 0.15);\n  }\n}\n\nbody {\n  background-color: var(--bg-secondary);\n}\n#bar {\n  background-color: var(--selection);\n  border-bottom-color: var(--comment);\n}\n#input {\n  color: var(--fg);\n  background-color: var(--bg);\n  border-color: var(--comment);\n  box-shadow: var(--pink) 0px 0px 1px;\n}\n#list {\n  background-color: var(--bg-secondary);\n}\n.item {\n  border-bottom-color: var(--comment);\n  color: var(--fg);\n}\n.item:hover, .item.s {\n  background-color: var(--selection);\n}\n.item .top {\n  color: var(--fg);\n}\n.item a {\n  color: var(--green);\n}\nmatch {\n  color: var(--orange);\n  font-weight: bold;\n}\n#input::selection {\n  background-color: var(--cyan);\n  color: var(--bg);\n}"
+}
