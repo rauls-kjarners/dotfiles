@@ -50,7 +50,7 @@ link:
     cat {{justfile_directory()}}/git/gitignore_global ~/.gitignore_global.local > ~/.gitignore_global
     
     # Setup lazygit config dir at the OS-correct path (don't symlink — generated per theme switch)
-    LG_DIR=$(command -v lazygit >/dev/null 2>&1 && lazygit --print-config-dir || echo "$HOME/.config/lazygit"); rm -rf "$LG_DIR" 2>/dev/null; mkdir -p "$LG_DIR"
+    LG_DIR=$(command -v lazygit >/dev/null 2>&1 && lazygit --print-config-dir || echo "$HOME/.config/lazygit"); mkdir -p "$LG_DIR"
 
     # Remove first to avoid symlink being created inside the dir if it already exists as a real directory
     rm -rf ~/.config/nvim
@@ -90,9 +90,25 @@ link:
     rm -f ~/.config/tridactyl/tridactylrc
     cp {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
 
+    # Phpactor (Global configuration)
+    mkdir -p ~/.config/phpactor
+    ln -sfn {{justfile_directory()}}/phpactor/phpactor.json ~/.config/phpactor/phpactor.json
+
     # Obsidian (markdown-oxide config)
     mkdir -p ~/OneDrive/vaults/main
     ln -sfn {{justfile_directory()}}/obsidian/moxide.toml ~/OneDrive/vaults/main/.moxide.toml
+
+    # Claude custom agents
+    mkdir -p ~/.claude
+    rm -rf ~/.claude/agents
+    ln -sfn {{justfile_directory()}}/claude/agents ~/.claude/agents
+
+    # OMP configuration and custom agents
+    mkdir -p ~/.omp/agent
+    ln -sfn {{justfile_directory()}}/omp/AGENTS.md ~/.omp/agent/AGENTS.md
+    ln -sfn {{justfile_directory()}}/omp/RULES.md ~/.omp/agent/RULES.md
+    rm -rf ~/.omp/agent/agents
+    ln -sfn {{justfile_directory()}}/claude/agents ~/.omp/agent/agents
 
     just bat-themes
 

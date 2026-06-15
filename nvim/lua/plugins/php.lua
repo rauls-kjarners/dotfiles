@@ -28,6 +28,19 @@ return {
             environment = {
               includePaths = {
                 "vendor/rector/rector/vendor/rector",
+                "var/cache/dev/Symfony/Config",
+              },
+            },
+            files = {
+              exclude = {
+                "**/.git",
+                "**/node_modules",
+                "**/vendor/**/{Tests,tests}",
+                "**/.history",
+                "**/vendor/**/vendor",
+                "**/var",
+                "**/build",
+                "**/public/bundles",
               },
             },
           },
@@ -91,8 +104,6 @@ return {
           if client and client.name == "php-lsp" then
             client.server_capabilities.diagnosticProvider = false
           end
-
-
         end,
       })
 

@@ -1,4 +1,6 @@
 [tools]
 node = "lts"
 rust = "latest"
+"npm:intelephense" = "latest"
+"github:can1357/oh-my-pi" = "latest"
 # "github:jorgsowa/php-lsp" = "latest"

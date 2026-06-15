@@ -46,6 +46,7 @@ brew "htmlq"
 # Editors
 # ====================
 brew "neovim"
+brew "tree-sitter-cli"
 
 # ====================
 # Containers

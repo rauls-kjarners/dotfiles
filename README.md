@@ -64,8 +64,11 @@ Themes auto-switch to match the OS dark/light mode. No manual action needed afte
 | Database CLI (pgcli)   | Dracula syntax       | Alucard syntax       |
 | tldr (tealdeer)        | Dracula syntax       | Alucard syntax       |
 | Browser (Tridactyl)    | Dracula theme        | Alucard theme        |
-
-| Jira TUI (jiratui) | `dracula` theme | `solarized-light` theme |
+| Syntax highlight (bat) | `Dracula` built-in   | `Alucard` (custom)   |
+| K8s UI (k9s)           | `dracula` skin       | `dracula` skin       |
+| Markdown (glamour)     | `dracula` style      | `alucard` style      |
+| Antigravity (agy)      | `solarized dark`     | `solarized light`    |
+| Jira TUI (jiratui)     | `dracula` theme      | `solarized-light`    |
 
 Switching is handled by `switch_theme dark|light` (a fish function). It is called automatically on shell startup by reading the OS dark mode preference.
 
@@ -122,7 +125,7 @@ Config is symlinked to `~/.config/ghostty` by `just link`. Theme auto-switches w
 ## Browser (Tridactyl)
 
 Tridactyl is used to bring Neovim-like keyboard navigation to Zen Browser/Firefox.
-Config is symlinked to `~/.config/tridactyl/tridactylrc` by `just link`.
+Config is copied to `~/.config/tridactyl/tridactylrc` by `just link` so theme switching doesn't dirty the repo.
 
 - **Theme**: Auto-switches between Dracula (dark) and Alucard (light) via `switch_theme`.
 - **Movement**: Re-mapped to `j=left`, `k=down`, `l=up`, `;=right` for ergonomic home-row usage.
@@ -150,6 +153,7 @@ If missing, Neovim gracefully ignores them without errors — but you'll miss ID
 **Phpactor** _(refactoring — runs alongside php-lsp/intelephense with diagnostics disabled)_
 
 - Handled completely by `mason.nvim`.
+- **Configuration**: The `just link` command automatically symlinks a global `phpactor.json` to `~/.config/phpactor/phpactor.json`. This configures critical performance exclusions (ignoring `var/cache` proxy noise and coverage reports) while preserving autocomplete for Symfony Config Builders.
 
 ### Twiggy (Symfony Twig templates)
 
@@ -163,6 +167,21 @@ Provides autocompletion and hover support for `.twig` files.
 - **claudecode.nvim**: Integrates the Claude Code CLI directly into Neovim. Use `<leader>ac` to toggle Claude, `<leader>as` to send buffers/selections, and `<leader>aa` / `<leader>ad` to accept/deny diffs.
 - **nvim-mcp**: A Rust-based MCP server that allows Claude to read your Neovim buffers and use its LSP securely. The binary is compiled automatically by Lazy.nvim, but you must register it with Claude Code by running `just install-nvim-mcp` manually.
 - **Copilot**: GitHub Copilot is enabled for inline code suggestions.
+
+#### Skills & Rules
+
+- **caveman**: An installed skill for the AI agents that enforces ultra-compressed, dense, action-oriented communication without conversational filler. It maximizes token efficiency and minimizes noise, and is enabled by default via dotfile-tracked system prompts.
+- **grill-me**: An installed skill for the AI agents that relentlessly interviews you about a plan or design until a shared understanding is reached. Just tell the agent to "grill me" to stress-test your ideas.
+- **Oh My Pi (OMP)**: The dotfiles repository contains custom rules (`RULES.md`) and agents (`AGENTS.md`) which are symlinked to `~/.omp/agent/` during setup.
+
+### Remote Testing
+
+- **neotest-remote**: A script installed to `~/.local/bin/neotest-remote` that intercepts Neotest commands, translates host paths to container paths, and executes PHP tests inside Docker via `docker-compose run`. It rewrites the resulting JUnit XML paths back to host paths so Neotest can display results inline.
+
+### Config Backups
+
+- **Vimium / Vimium C**: Configuration backups are available in the `vimium/` directory. These must be imported manually via the browser extension's options page.
+- **Obsidian**: Markdown-oxide LSP configuration (`moxide.toml`) is symlinked directly into `~/OneDrive/vaults/main/` to provide workspace-specific LSP features.
 
 ### First Run
 
