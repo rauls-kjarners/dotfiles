@@ -9,6 +9,12 @@ return {
           smart = { hidden = true },    -- <leader><space> (Smart Find Files)
         },
       },
+      styles = {
+        lazygit = {
+          width = 0,
+          height = 0,
+        },
+      },
     },
   },
 }

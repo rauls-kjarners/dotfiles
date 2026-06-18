@@ -40,7 +40,6 @@ Run any step independently if needed:
 | `just clean`                    | Clean up caches (mise prune)                             |
 | `just bat-themes`               | Build the custom Alucard bat/delta syntax theme          |
 | `just fish-plugins`             | Update Fish shell plugins via fisher                     |
-| `just install-nvim-mcp`         | Register Neovim MCP server with Claude                   |
 | `just dark-mode-notify-install` | Compile and install `dark-mode-notify` from source       |
 | `just mac-setup`                | Re-install the macOS auto dark-mode daemon               |
 | `just linux-setup`              | Re-install the Linux auto dark-mode service              |
@@ -163,9 +162,8 @@ Provides autocompletion and hover support for `.twig` files.
 
 ### AI Assistants
 
-- **Antigravity (agy)**: Used as the primary AI coding assistant CLI. Run the `agy` command natively in a Zellij split pane next to Neovim. `agy` automatically detects the Neovim socket (`/tmp/nvim-*.sock`) and connects securely via MCP without requiring any third-party Neovim wrapper plugins.
+- **Antigravity (agy)**: Used as the primary AI coding assistant CLI. Run the `agy` command natively in a Zellij split pane next to Neovim.
 - **claudecode.nvim**: Integrates the Claude Code CLI directly into Neovim. Use `<leader>ac` to toggle Claude, `<leader>as` to send buffers/selections, and `<leader>aa` / `<leader>ad` to accept/deny diffs.
-- **nvim-mcp**: A Rust-based MCP server that allows Claude to read your Neovim buffers and use its LSP securely. The binary is compiled automatically by Lazy.nvim, but you must register it with Claude Code by running `just install-nvim-mcp` manually.
 - **Copilot**: GitHub Copilot is enabled for inline code suggestions.
 
 #### Skills & Rules

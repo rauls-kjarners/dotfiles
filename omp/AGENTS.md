@@ -15,3 +15,6 @@ When delegating to `read-only-explorer` after a semantic lookup, carry the resol
 
 Critique, analysis, and synthesis stay inline — your job, never delegated.
 
+## Neovim Integration
+
+**Context Resolution:** When I refer to "this file", "here", or "current file", or ask a code question without specifying a file, you MUST query my Neovim sockets via bash to find the active buffer and line number. You MUST filter the sockets to only target the Neovim instance whose working directory (`getcwd()`) matches this OMP session's workspace.

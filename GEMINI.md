@@ -55,15 +55,3 @@ When `mcp__*__*` tools are exposed, prefer them over text/regex/shell per the ru
 
 **Avoid:** `mcp__*__reformat_file` (use `php-cs-fixer`/`gofmt`/`black` via shell — IDE reformat causes config drift); `mcp__*__execute_terminal_command` (prefer direct shell unless you need an IDE-managed container); `mcp__*__apply_quick_fix` (rule 4); `mcp__*__invoke_ide_action` (same risk class — use only for safe read-only/navigation actions; pass `filePaths` to avoid global runs).
 
-## Neovim MCP — tool priority
-
-When Neovim is running and `nvim` MCP tools are exposed, prefer them over raw text/regex/shell. Availability depends on active LSP and Treesitter state. **If a named tool isn't exposed, say so before falling back to grep/regex.**
-
-Connection is automatic (`--connect auto`). Read the `nvim-connections://` resource (JSON `[{id, target}]`) and use `id` as `connection_id`; never call `get_targets` or shell out to `--remote-expr`. If empty, call `connect` with `/tmp/nvim-<cwd-basename>.sock` and re-read — the only permitted recovery. If that fails, Neovim isn't running: say so.
-
-1. **Semantic lookup first** via `lsp_workspace_symbols`/`lsp_definition`. Only `read` once file and location are known.
-2. **Never text-replace identifiers** — use `lsp_rename`, then a shell text-search audit for string literals the rename misses (config, templates, tags).
-3. **Structural over regex** — prefer `ast-grep`/`sg` via shell over raw regex.
-4. **Inspections before fixes** — pull `buffer_diagnostics`, patch manually, don't blindly auto-fix.
-5. **Validation ladder:** static edit → `buffer_diagnostics` on touched files; cross-file edit → `buffer_diagnostics` + project-wide static analysis (PHPStan/Pyright) via shell + old-name audit; behavior change → run tests via shell.
-6. **Framework navigation via shell** — `php bin/console debug:router`, `debug:container`, etc.

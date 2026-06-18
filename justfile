@@ -147,11 +147,6 @@ clean:
     brew cleanup
     mise prune
 
-# Register nvim-mcp (Rust-based Neovim MCP server for Claude)
-install-nvim-mcp:
-    claude mcp add -s user nvim ~/.cargo/bin/nvim-mcp -- --connect auto || true
-    @echo "nvim-mcp registered with Claude (compiled by Lazy.nvim)"
-
 # Setup macOS specific tools (auto dark mode, fonts)
 mac-setup: dark-mode-notify-install
     brew install --cask font-jetbrains-mono-nerd-font || true
