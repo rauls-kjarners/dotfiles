@@ -10,9 +10,13 @@ function switch_theme --description "Switch system themes between dark and light
     # (guards against persisted-but-broken state where _switch_theme_active is set
     # but the on-disk configs hold empty values from a previous bad write).
     if test "$theme" = "$_switch_theme_active"
+        set -l _expected_zj_theme "dracula"
+        if test "$theme" = "light"
+            set _expected_zj_theme "alucard"
+        end
         if not test -f "$HOME/.config/zellij/config.kdl"
             # Config missing — fall through to (re)create it
-        else if string match -rq "^theme \"$theme\"" (cat "$HOME/.config/zellij/config.kdl")
+        else if string match -rq "^theme \"$_expected_zj_theme\"" (cat "$HOME/.config/zellij/config.kdl")
             return 0
         end
         # else: file exists but theme line doesn't match — fall through to re-apply
@@ -306,8 +310,10 @@ function switch_theme --description "Switch system themes between dark and light
     if test -f "$HOME/.config/zellij/config.kdl"
         set -l _zj_cfg "$HOME/.config/zellij/config.kdl"
         set -l _zj_tmp (mktemp)
-        string replace -r -- '^theme .*' "theme \"$zellij_theme\"" < "$_zj_cfg" > "$_zj_tmp"
-        mv "$_zj_tmp" "$_zj_cfg"
+        if string replace -r -- '^theme .*' "theme \"$zellij_theme\"" < "$_zj_cfg" > "$_zj_tmp"
+            cat "$_zj_tmp" > "$_zj_cfg"
+        end
+        rm -f "$_zj_tmp"
     end
     # Tridactyl theme (inject customthemes inline to avoid CSP/local-file-read issues;
     # write to the deploy copy, never the repo source — mirrors zellij/lazygit)

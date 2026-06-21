@@ -1,0 +1,6 @@
+[misc]
+assume_yes = true
+disable = ["containers", "waydroid"] # Prevents blind image updates, stops waydroid panic
+[linux]
+# Enable rpm-ostree updates (immutable Linux distros)
+rpm_ostree = true

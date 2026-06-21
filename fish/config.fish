@@ -4,22 +4,22 @@ if test -d /home/linuxbrew/.linuxbrew
 end
 
 # Add ~/.local/bin to PATH for external tools (php-lsp, etc)
-fish_add_path -g ~/.local/bin
+fish_add_path -gP ~/.local/bin
 
 # Add Homebrew's keg-only libpq to PATH (for psql / vim-dadbod)
 if test -d /opt/homebrew/opt/libpq/bin
-    fish_add_path -g /opt/homebrew/opt/libpq/bin
+    fish_add_path -gP -a /opt/homebrew/opt/libpq/bin
 else if test -d /usr/local/opt/libpq/bin
-    fish_add_path -g /usr/local/opt/libpq/bin
+    fish_add_path -gP -a /usr/local/opt/libpq/bin
 else if test -d /home/linuxbrew/.linuxbrew/opt/libpq/bin
-    fish_add_path -g /home/linuxbrew/.linuxbrew/opt/libpq/bin
+    fish_add_path -gP -a /home/linuxbrew/.linuxbrew/opt/libpq/bin
 end
 
 if type -q mise
     mise activate fish | source
 end
 
-# Force truecolor support inside Zellij for lipgloss apps (like slk)
+# Force truecolor support inside Zellij for lipgloss apps
 set -gx COLORTERM truecolor
 
 # Point Docker-compatible tools (lazydocker, k9s) to the Podman socket on Linux
@@ -42,27 +42,34 @@ if status is-interactive
         set -gx BAT_THEME Dracula
     end
 
-    # Apply theme matching current macOS dark/light mode (no-op on Linux).
-    # The dark-mode-notify launchd daemon is the live-switch driver — it calls
-    # switch_theme whenever the OS appearance changes, so open shells update
-    # automatically. This block is only needed for new shell instances that
-    # open before/after a theme flip that the daemon already dispatched.
+    # Apply theme matching current OS dark/light mode.
+    # The OS-level daemon (launchd/systemd) live-switches open shells when appearance changes,
+    # but new shell instances need to check the OS state on startup to match.
+    set -l _desired_theme light
+    
     if test (uname) = Darwin
-        # Skip the defaults read + switch_theme call if the theme is already
-        # current to avoid the subprocess overhead on every pane/tab open.
-        set -l _desired_theme light
         if defaults read -g AppleInterfaceStyle >/dev/null 2>&1
             set _desired_theme dark
         end
-        if test "$_switch_theme_active" != "$_desired_theme"
-            switch_theme "$_desired_theme"
+    else if test (uname) = Linux
+        # Query Freedesktop portal for color-scheme (1=Dark, 2=Light, 0=Default)
+        set -l _os_theme (gdbus call --session --dest=org.freedesktop.portal.Desktop --object-path=/org/freedesktop/portal/desktop --method=org.freedesktop.portal.Settings.Read org.freedesktop.appearance color-scheme 2>/dev/null | awk -F'uint32 ' '{print $2}' | tr -d '>,)')
+        if test "$_os_theme" = "1"
+            set _desired_theme dark
         end
     end
+
+    # Always call switch_theme; it has its own fast-bailout check to ensure
+    # configs haven't been overwritten by `just link` / `just setup`.
+    switch_theme "$_desired_theme"
 
     # ====================
     # Aliases
     # ====================
     alias cat="bat"
+
+    alias box="distrobox"
+    alias update="topgrade"
 
     alias ls="eza --color=always --icons=always"
     alias ll="eza --color=always --long --git --icons=always"
@@ -102,9 +109,13 @@ if status is-interactive
     if type -q zoxide
         zoxide init fish --cmd cd | source
     end
-
-    # Only show the system info banner in a bare terminal, not in every Zellij pane/split.
-    if type -q fastfetch; and not set -q ZELLIJ
-        fastfetch
+    
+    if type -q atuin
+        atuin init fish | source
     end
+
+    if type -q direnv
+        direnv hook fish | source
+    end
+
 end

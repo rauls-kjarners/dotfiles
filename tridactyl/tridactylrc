@@ -11,12 +11,11 @@ keymap l k
 keymap ; l
 
 " 3. Shift the uppercase keys for tab navigation
-" Match Vimium: K is next (right), L is prev (left).
-" Because of keymap translations above:
-" Pressing K translates to J. We want next tab. So we bind J to tabnext.
-" Pressing L translates to K. We want prev tab. So we bind K to tabprev.
-bind J tabnext
-bind K tabprev
+bind K tabnext
+bind L tabprev
+
+" Unbind / so Zen can handle it natively for Find in Page
+unbind /
 
 " 4. History Navigation (LazyVim style)
 bind <C-o> back

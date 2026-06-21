@@ -14,6 +14,22 @@ gh-extensions:
 brew-install:
     brew bundle
 
+# Install OMP plugins (node-based LSPs)
+omp-plugins:
+    omp plugin install pyright intelephense
+
+# Install and configure OMP skills
+omp-skills: mise-install
+    rm -rf ~/.omp/skills ~/.omp/agent/skills
+    if [ -d ~/.pi/agent/skills ]; then \
+        ln -sfn ~/.pi/agent/skills ~/.omp/skills; \
+        ln -sfn ~/.pi/agent/skills ~/.omp/agent/skills; \
+    else \
+        mkdir -p ~/.omp/skills ~/.omp/agent/skills; \
+    fi
+    mise exec -- skills add mattpocock/skills@grill-me -a pi -g -y
+    mise exec -- skills add juliusbrussee/caveman@caveman -a pi -g -y
+
 # Install tools with mise
 mise-install:
     mise install
@@ -23,7 +39,10 @@ fish-plugins:
     fish -c 'fisher update'
 
 # Link dotfiles to home directory
-link:
+link: omp-skills
+    mkdir -p ~/.config/topgrade
+    ln -sf {{justfile_directory()}}/topgrade/topgrade.toml ~/.config/topgrade/topgrade.toml
+
     mkdir -p ~/.config/fish
     
     # Safely source fish config (keeps OS-generated paths out of dotfiles repo)
@@ -71,15 +90,10 @@ link:
     rm -rf ~/.config/ghostty
     ln -sfn {{justfile_directory()}}/ghostty ~/.config/ghostty
 
-    # Slk (slack TUI config)
-    mkdir -p ~/.config/slk
-    ln -sfn {{justfile_directory()}}/slk/themes ~/.config/slk/themes
-    if [ ! -f ~/.config/slk/config.toml ]; then cp {{justfile_directory()}}/slk/config-base.toml ~/.config/slk/config.toml; fi
-
     # Mise (global tool configuration)
     mkdir -p ~/.config/mise
     ln -sfn {{justfile_directory()}}/mise/config.toml ~/.config/mise/config.toml
-
+    mise trust ~/.config/mise/config.toml
     # Neotest Docker wrapper (project-agnostic path mapper for running tests in Docker)
     mkdir -p ~/.local/bin
     ln -sfn {{justfile_directory()}}/bin/neotest-remote ~/.local/bin/neotest-remote
@@ -89,6 +103,21 @@ link:
     mkdir -p ~/.config/tridactyl
     rm -f ~/.config/tridactyl/tridactylrc
     cp {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
+
+    # Flatpak Tridactyl Native Messaging (Zen & Firefox)
+    -if command -v flatpak >/dev/null 2>&1; then \
+        for app in app.zen_browser.zen org.mozilla.firefox; do \
+            if flatpak info $$app >/dev/null 2>&1; then \
+                flatpak override --user --persist=.mozilla $$app || true; \
+                flatpak override --user --talk-name=org.freedesktop.Flatpak $$app || true; \
+                mkdir -p ~/.var/app/$$app/.mozilla/native-messaging-hosts; \
+                echo '#!/bin/sh' > ~/.var/app/$$app/.mozilla/native-messaging-hosts/wrapper.sh; \
+                echo 'exec flatpak-spawn --host ~/.local/share/tridactyl/native_main "$$@"' >> ~/.var/app/$$app/.mozilla/native-messaging-hosts/wrapper.sh; \
+                chmod +x ~/.var/app/$$app/.mozilla/native-messaging-hosts/wrapper.sh; \
+                echo '{"name": "tridactyl", "description": "Tridactyl", "path": "'$$HOME'/.mozilla/native-messaging-hosts/wrapper.sh", "type": "stdio", "allowed_extensions": ["tridactyl.vim@cmcaine.co.uk", "tridactyl.vim.betas@cmcaine.co.uk"]}' > ~/.var/app/$$app/.mozilla/native-messaging-hosts/tridactyl.json; \
+            fi; \
+        done; \
+    fi
 
     # Phpactor (Global configuration)
     mkdir -p ~/.config/phpactor
@@ -111,6 +140,9 @@ link:
     ln -sfn {{justfile_directory()}}/claude/agents ~/.omp/agent/agents
 
     just bat-themes
+
+    # Re-apply current OS theme if active to override default repo templates
+    @fish -c 'if set -q _switch_theme_active; switch_theme "$_switch_theme_active"; end' || true
 
 # Build custom bat syntax themes (Alucard + any others in bat/themes/)
 bat-themes:
@@ -136,16 +168,11 @@ dark-mode-notify-install:
 
 # Update system packages and dotfile-managed tools
 update:
-    brew update && brew upgrade
-    mise upgrade
-    fish -c 'fisher update'
-    gh extension upgrade --all || true
-    nvim --headless "+Lazy! sync" +qa
+    @topgrade
 
 # Clean system and dotfile tool caches
 clean:
-    brew cleanup
-    mise prune
+    @topgrade --cleanup
 
 # Setup macOS specific tools (auto dark mode, fonts)
 mac-setup: dark-mode-notify-install
@@ -154,9 +181,26 @@ mac-setup: dark-mode-notify-install
     launchctl unload ~/Library/LaunchAgents/com.user.dark-mode-notify.plist 2>/dev/null || true
     launchctl load ~/Library/LaunchAgents/com.user.dark-mode-notify.plist
 
+# Install Flatpaks on Linux
+flatpak-install:
+    @if command -v flatpak > /dev/null; then \
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo; \
+        FLATPAKS=$$(cat linux/flatpaks.txt | grep -v '^#' | grep -v '^$$'); \
+        if [ -n "$$FLATPAKS" ]; then \
+            flatpak install -y flathub $$FLATPAKS; \
+        fi; \
+    fi
+
+# Assemble distrobox containers
+distrobox-setup:
+    @if command -v distrobox > /dev/null; then \
+        distrobox assemble create --file linux/distrobox.ini; \
+    fi
+
 # Setup Linux specific tools (auto dark mode, fonts)
-linux-setup:
+linux-setup: flatpak-install distrobox-setup
     #!/usr/bin/env bash
+
     set -euo pipefail
     
     echo "Setting up auto dark mode service..."
@@ -190,4 +234,4 @@ os-setup:
     fi
 
 # Run all setup tasks
-setup: brew-install gh-extensions mise-install link fish-plugins bat-themes os-setup
+setup: brew-install gh-extensions mise-install link fish-plugins bat-themes omp-plugins os-setup

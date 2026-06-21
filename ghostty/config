@@ -25,14 +25,15 @@ cursor-style = bar
 # ====================
 # Window
 # ====================
-# left Option = Alt (for Zellij keybindings); right Option still types special chars
 macos-option-as-alt = left
 macos-icon-ghost-color = "#bd93f9"
 macos-icon-screen-color = "#282a36"
-window-decoration = server
+window-decoration = none
 
 # ====================
 # Terminal Behavior
 # ====================
 scrollback-limit = 10000
 
+# Load Linux-specific keybinds (ignored if file is missing, like on macOS)
+config-file = ?linux-local

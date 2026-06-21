@@ -41,8 +41,10 @@ return {
   },
   {
     "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "dracula",
-    },
+    opts = function(_, opts)
+      opts = type(opts) == "table" and opts or {}
+      opts.colorscheme = vim.env.BAT_THEME == "Alucard" and "dracula-alucard" or "dracula"
+      return opts
+    end,
   },
 }

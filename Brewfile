@@ -18,6 +18,7 @@ brew "lazygit"
 # ====================
 # CLI Utilities
 # ====================
+brew "topgrade"
 brew "bat"
 brew "eza"
 brew "fd"
@@ -25,6 +26,8 @@ brew "ripgrep"
 brew "fzf"
 brew "zoxide"
 brew "yazi"
+brew "atuin"
+brew "direnv"
 brew "try"
 brew "btop"
 brew "fastfetch"
@@ -33,14 +36,16 @@ brew "glow"
 brew "tealdeer"
 brew "jiratui"
 brew "jira-cli"
-brew "gammons/tap/slk"
-brew "pngpaste"
+if OS.mac?
+  brew "pngpaste"
+end
 
 # ====================
 # Data Processors
 # ====================
 brew "jq"
 brew "htmlq"
+brew "yq"
 
 # ====================
 # Editors
