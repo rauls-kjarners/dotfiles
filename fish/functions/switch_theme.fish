@@ -84,7 +84,6 @@ function switch_theme --description "Switch system themes between dark and light
         set -f glamour_style "$_dotfiles/glamour/dracula.json"
         set -f agy_color_scheme solarized dark
         set -f jiratui_theme dracula
-        set -f tridactyl_theme dracula
 
     else
         # Alucard Light palette
@@ -132,7 +131,6 @@ function switch_theme --description "Switch system themes between dark and light
         set -f glamour_style "$_dotfiles/glamour/alucard.json"
         set -f agy_color_scheme solarized light
         set -f jiratui_theme solarized-light
-        set -f tridactyl_theme alucard
 
     end
 
@@ -315,33 +313,6 @@ function switch_theme --description "Switch system themes between dark and light
         end
         rm -f "$_zj_tmp"
     end
-    # Tridactyl theme (inject customthemes inline to avoid CSP/local-file-read issues;
-    # write to the deploy copy, never the repo source — mirrors zellij/lazygit)
-    set -l tridactyl_cfg "$HOME/.config/tridactyl/tridactylrc"
-    set -l theme_css "$_dotfiles/tridactyl/themes/$tridactyl_theme.css"
-    if test -f "$tridactyl_cfg"; and test -f "$theme_css"
-        set -l css_content (tr -d '\n' < "$theme_css")
-        set -l _tridactyl_tmp (mktemp)
-        # CSS goes via ENVIRON (read literally) not awk -v, which would process
-        # C escapes (\n \t \\) and silently mangle any backslash in theme CSS.
-        if TRIDACTYL_CSS="$css_content" awk -v t="$tridactyl_theme" '
-            BEGIN { c = ENVIRON["TRIDACTYL_CSS"] }
-            /^set customthemes\./ { next }
-            /^colorscheme / {
-                print "set customthemes." t " " c
-                print "colorscheme " t
-                injected=1
-                next
-            }
-            { print }
-            END { if (!injected) { print "set customthemes." t " " c; print "colorscheme " t } }
-        ' < "$tridactyl_cfg" > "$_tridactyl_tmp"
-            mv "$_tridactyl_tmp" "$tridactyl_cfg"
-        else
-            rm -f "$_tridactyl_tmp"
-        end
-    end
-
 
     set -U _switch_theme_active "$theme"
     functions --erase _set_u _set_ux

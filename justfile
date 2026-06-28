@@ -99,10 +99,10 @@ link: omp-skills
     ln -sfn {{justfile_directory()}}/bin/neotest-remote ~/.local/bin/neotest-remote
     chmod +x {{justfile_directory()}}/bin/neotest-remote
 
-    # Tridactyl (copy rc to avoid dirtying the repo on theme switch — mirrors zellij approach)
+    # Tridactyl
     mkdir -p ~/.config/tridactyl
     rm -f ~/.config/tridactyl/tridactylrc
-    cp {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
+    ln -sf {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
 
     # Flatpak Tridactyl Native Messaging (Zen & Firefox)
     -if command -v flatpak >/dev/null 2>&1; then \

@@ -1,6 +1,6 @@
 [misc]
 assume_yes = true
-disable = ["containers", "waydroid"] # Prevents blind image updates, stops waydroid panic
+disable = ["containers", "waydroid", "toolbx", "antigravity"] # Prevents blind image updates, stops waydroid panic, toolbx conflict, antigravity hang
 [linux]
 # Enable rpm-ostree updates (immutable Linux distros)
 rpm_ostree = true

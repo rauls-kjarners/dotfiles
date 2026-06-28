@@ -1,5 +1,5 @@
 " --- General Settings ---
-colorscheme alucard
+colorscheme midnight
 " --- Keybindings: jkl; movement ---
 " 1. Preserve extended hint modes by moving them to 'h'
 keymap h ;
