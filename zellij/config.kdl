@@ -8,6 +8,9 @@
 // switch_theme fish function updates this line via sed for live hot-swap.
 theme "dracula"
 
+theme_dark "dracula"
+theme_light "alucard"
+
 // UI
 pane_frames true
 mouse_mode false

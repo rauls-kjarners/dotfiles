@@ -88,7 +88,12 @@ link: omp-skills
 
     # Ghostty (config dir — works on both macOS and Linux)
     rm -rf ~/.config/ghostty
-    ln -sfn {{justfile_directory()}}/ghostty ~/.config/ghostty
+    mkdir -p ~/.config/ghostty
+    ln -sfn {{justfile_directory()}}/ghostty/config ~/.config/ghostty/config
+    ln -sfn {{justfile_directory()}}/ghostty/themes ~/.config/ghostty/themes
+    @if [ "$(uname)" = "Linux" ]; then \
+        ln -sfn {{justfile_directory()}}/ghostty/linux-local ~/.config/ghostty/linux-local; \
+    fi
 
     # Mise (global tool configuration)
     mkdir -p ~/.config/mise

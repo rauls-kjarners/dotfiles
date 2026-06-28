@@ -304,7 +304,8 @@ function switch_theme --description "Switch system themes between dark and light
         end
     end
 
-    # Zellij theme (live hot-swap — Zellij reloads config.kdl automatically)
+    # Zellij theme (live hot-swap — Zellij reloads config.kdl automatically on macOS,
+    # but on Linux cat > truncates and might panic the watcher. We rely on action broadcast below).
     if test -f "$HOME/.config/zellij/config.kdl"
         set -l _zj_cfg "$HOME/.config/zellij/config.kdl"
         set -l _zj_tmp (mktemp)
@@ -312,6 +313,16 @@ function switch_theme --description "Switch system themes between dark and light
             cat "$_zj_tmp" > "$_zj_cfg"
         end
         rm -f "$_zj_tmp"
+    end
+
+    if command -q zellij
+        set -l zj_action "set-dark-theme"
+        if test "$theme" = "light"
+            set zj_action "set-light-theme"
+        end
+        for session in (zellij list-sessions -n 2>/dev/null | awk '{print $1}')
+            zellij --session "$session" action "$zj_action" 2>/dev/null
+        end
     end
 
     set -U _switch_theme_active "$theme"

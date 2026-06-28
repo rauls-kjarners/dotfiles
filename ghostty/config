@@ -28,7 +28,6 @@ cursor-style = bar
 macos-option-as-alt = left
 macos-icon-ghost-color = "#bd93f9"
 macos-icon-screen-color = "#282a36"
-window-decoration = none
 
 # ====================
 # Terminal Behavior
