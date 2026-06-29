@@ -132,7 +132,12 @@ link: omp-skills
     mkdir -p ~/OneDrive/vaults/main
     ln -sfn {{justfile_directory()}}/obsidian/moxide.toml ~/OneDrive/vaults/main/.moxide.toml
 
-    # Claude custom agents
+    # Tridactyl
+    mkdir -p ~/.config/tridactyl
+    rm -f ~/.config/tridactyl/tridactylrc
+    ln -sfn {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
+    rm -rf ~/.config/tridactyl/themes
+    ln -sfn {{justfile_directory()}}/tridactyl/themes ~/.config/tridactyl/themes
     mkdir -p ~/.claude
     rm -rf ~/.claude/agents
     ln -sfn {{justfile_directory()}}/claude/agents ~/.claude/agents
