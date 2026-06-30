@@ -27,3 +27,11 @@ vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
     end
   end,
 })
+
+-- Force WinSeparator visible (fixes invisible splits in Dracula and similar themes)
+local function set_border_highlights()
+  vim.api.nvim_set_hl(0, "WinSeparator", { link = "Keyword" })
+  vim.api.nvim_set_hl(0, "SnacksWinSeparator", { link = "Keyword" })
+end
+set_border_highlights()
+vim.api.nvim_create_autocmd("ColorScheme", { callback = set_border_highlights })

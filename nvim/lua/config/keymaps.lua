@@ -29,10 +29,11 @@ map("n", "<S-k>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.api.nvim_create_autocmd("TermOpen", {
   group = vim.api.nvim_create_augroup("custom-term-nav", { clear = true }),
   callback = function()
-    vim.keymap.set("t", "<C-j>", "<cmd>wincmd h<cr>", { buffer = 0, desc = "Go to Left Window" })
-    vim.keymap.set("t", "<C-k>", "<cmd>wincmd j<cr>", { buffer = 0, desc = "Go to Lower Window" })
-    vim.keymap.set("t", "<C-l>", "<cmd>wincmd k<cr>", { buffer = 0, desc = "Go to Upper Window" })
-    vim.keymap.set("t", "<C-;>", "<cmd>wincmd l<cr>", { buffer = 0, desc = "Go to Right Window" })
+    vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>h", { buffer = 0, desc = "Go to Left Window" })
+    vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>j", { buffer = 0, desc = "Go to Lower Window" })
+    vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>k", { buffer = 0, desc = "Go to Upper Window" })
+    vim.keymap.set("t", "<C-;>", "<C-\\><C-n><C-w>l", { buffer = 0, desc = "Go to Right Window" })
   end,
 })
 pcall(vim.keymap.del, "t", "<C-h>")
+
