@@ -11,8 +11,8 @@ keymap l k
 keymap ; l
 
 " 3. Shift the uppercase keys for tab navigation
-bind K tabnext
-bind L tabprev
+bind J tabnext
+bind K tabprev
 
 " Unbind / so Zen can handle it natively for Find in Page
 unbind /
