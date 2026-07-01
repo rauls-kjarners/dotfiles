@@ -144,7 +144,6 @@ link: omp-skills
 
     # OMP configuration and custom agents
     mkdir -p ~/.omp/agent
-    ln -sfn {{justfile_directory()}}/omp/AGENTS.md ~/.omp/agent/AGENTS.md
     ln -sfn {{justfile_directory()}}/omp/RULES.md ~/.omp/agent/RULES.md
     rm -rf ~/.omp/agent/agents
     ln -sfn {{justfile_directory()}}/claude/agents ~/.omp/agent/agents
