@@ -3,17 +3,18 @@
 
 return {
 
-
-  -- Structural search/replace (treesitter-aware, language-level patterns)
-  {
-    "cshuaimin/ssr.nvim",
-    keys = {
-      {
-        "<leader>rT",
-        function() require("ssr").open() end,
-        mode = { "n", "x" },
-        desc = "Refactor: structural search & replace",
-      },
+    -- Structural search/replace (treesitter-aware, language-level patterns)
+    {
+        "cshuaimin/ssr.nvim",
+        keys = {
+            {
+                "<leader>rT",
+                function()
+                    require("ssr").open()
+                end,
+                mode = { "n", "x" },
+                desc = "Refactor: structural search & replace",
+            },
+        },
     },
-  },
 }

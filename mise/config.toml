@@ -5,8 +5,9 @@ rust = "latest"
 go = "latest"
 "npm:skills" = "latest"
 "github:can1357/oh-my-pi" = "latest"
-# "github:jorgsowa/php-lsp" = "latest"
 "go:golang.org/x/tools/gopls" = "latest"
+"github:phpactor/phpactor" = "latest"
+# "github:jorgsowa/php-lsp" = "latest"
 
 [settings]
 minimum_release_age_excludes = ["github:can1357/oh-my-pi"]

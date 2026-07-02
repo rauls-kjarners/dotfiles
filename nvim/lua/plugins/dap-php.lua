@@ -9,55 +9,54 @@
 -- Override per-project in a .nvim.lua file at the project root.
 
 return {
-  -- Ensure Mason installs the PHP debug adapter
-  {
-    "mason-org/mason.nvim",
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "php-debug-adapter" })
-      return opts
-    end,
-  },
+    -- Ensure Mason installs the PHP debug adapter
+    {
+        "mason-org/mason.nvim",
+        opts = function(_, opts)
+            opts.ensure_installed = opts.ensure_installed or {}
+            vim.list_extend(opts.ensure_installed, { "php-debug-adapter" })
+            return opts
+        end,
+    },
 
-  -- Inline variable values shown next to code during a debug session
-  {
-    "theHamsta/nvim-dap-virtual-text",
-    opts = {},
-  },
+    -- Inline variable values shown next to code during a debug session
+    {
+        "theHamsta/nvim-dap-virtual-text",
+        opts = {},
+    },
 
-  -- PHP/Xdebug adapter configuration
-  {
-    "mfussenegger/nvim-dap",
-    optional = true,
-    config = function()
-      local dap = require("dap")
+    -- PHP/Xdebug adapter configuration
+    {
+        "mfussenegger/nvim-dap",
+        optional = true,
+        config = function()
+            local dap = require("dap")
 
-      dap.adapters.php = {
-        type = "executable",
-        command = "node",
-        args = {
-          vim.fn.stdpath("data")
-            .. "/mason/packages/php-debug-adapter/extension/out/phpDebug.js",
-        },
-      }
+            dap.adapters.php = {
+                type = "executable",
+                command = "node",
+                args = {
+                    vim.fn.stdpath("data") .. "/mason/packages/php-debug-adapter/extension/out/phpDebug.js",
+                },
+            }
 
-      dap.configurations.php = {
-        {
-          type = "php",
-          request = "launch",
-          name = "Listen for Xdebug (Docker: /var/www)",
-          port = 9003,
-          pathMappings = {
-            ["/var/www"] = "${workspaceFolder}",
-          },
-        },
-        {
-          type = "php",
-          request = "launch",
-          name = "Listen for Xdebug (local)",
-          port = 9003,
-        },
-      }
-    end,
-  },
+            dap.configurations.php = {
+                {
+                    type = "php",
+                    request = "launch",
+                    name = "Listen for Xdebug (Docker: /var/www)",
+                    port = 9003,
+                    pathMappings = {
+                        ["/var/www"] = "${workspaceFolder}",
+                    },
+                },
+                {
+                    type = "php",
+                    request = "launch",
+                    name = "Listen for Xdebug (local)",
+                    port = 9003,
+                },
+            }
+        end,
+    },
 }
