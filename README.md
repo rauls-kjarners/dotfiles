@@ -50,12 +50,6 @@ Brings Neovim-like keyboard navigation to Zen Browser/Firefox.
 - **External Editor**: `<C-i>` in any text box opens a Ghostty window running Neovim to write web comments natively.
 - **Hints**: Bound to left-hand keys (`sadfqewcxz`) so your right hand never leaves movement keys.
 
-### Neovim
-
-Acts as a JetBrains replacement. Most tools install automatically.
-
-- **Obsidian**: Markdown-oxide LSP configuration (`moxide.toml`) is symlinked directly into `~/OneDrive/vaults/main/` to provide workspace-specific LSP features.
-
 ## Common Aliases
 
 - `lzg`: Launches `lazygit`

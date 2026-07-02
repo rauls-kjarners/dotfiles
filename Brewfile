@@ -51,7 +51,6 @@ brew "yq"
 # Editors
 # ====================
 brew "neovim"
-brew "tree-sitter-cli"
 
 # ====================
 # Containers

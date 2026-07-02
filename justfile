@@ -75,6 +75,7 @@ link: omp-skills
     rm -rf ~/.config/nvim
     ln -sfn {{justfile_directory()}}/nvim ~/.config/nvim
     ln -sfn {{justfile_directory()}}/ideavim/.ideavimrc ~/.ideavimrc
+    ln -sfn {{justfile_directory()}}/markdownlint/.markdownlint-cli2.yaml ~/.markdownlint-cli2.yaml
 
     # Zellij (copy config.kdl to avoid dirtying the repo on theme switch — mirrors lazygit approach)
     rm -rf ~/.config/zellij
@@ -127,10 +128,6 @@ link: omp-skills
     # Phpactor (Global configuration)
     mkdir -p ~/.config/phpactor
     ln -sfn {{justfile_directory()}}/phpactor/phpactor.json ~/.config/phpactor/phpactor.json
-
-    # Obsidian (markdown-oxide config)
-    mkdir -p ~/OneDrive/vaults/main
-    ln -sfn {{justfile_directory()}}/obsidian/moxide.toml ~/OneDrive/vaults/main/.moxide.toml
 
     # Tridactyl
     mkdir -p ~/.config/tridactyl
