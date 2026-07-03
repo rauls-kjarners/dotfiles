@@ -29,6 +29,8 @@ map("n", "<S-k>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.api.nvim_create_autocmd("TermOpen", {
     group = vim.api.nvim_create_augroup("custom-term-nav", { clear = true }),
     callback = function()
+        if vim.b.snacks_terminal then return end
+
         vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>h", { buffer = 0, desc = "Go to Left Window" })
         vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>j", { buffer = 0, desc = "Go to Lower Window" })
         vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>k", { buffer = 0, desc = "Go to Upper Window" })

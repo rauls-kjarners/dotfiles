@@ -4,6 +4,7 @@ git:
       pager: 'delta --light --paging=never --features=alucard --line-numbers --hyperlinks --hyperlinks-file-link-format="idea://open?file={path}&line={line}"'
 
 gui:
+  showCommandLog: false
   theme:
     activeBorderColor:
       - "#A3144D"

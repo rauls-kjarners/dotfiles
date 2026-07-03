@@ -4,6 +4,7 @@ git:
       pager: 'delta --dark --paging=never --features=dracula --line-numbers --hyperlinks --hyperlinks-file-link-format="idea://open?file={path}&line={line}"'
 
 gui:
+  showCommandLog: false
   theme:
     activeBorderColor:
       - "#FF79C6"
