@@ -14,6 +14,10 @@ return {
                             ["<C-j>"] = false,
                             ["<C-k>"] = { "list_down", mode = { "i", "n" } },
                             ["<C-l>"] = { "list_up", mode = { "i", "n" } },
+                            -- Add normal mode equivalents for jkl;
+                            ["j"] = false,
+                            ["k"] = { "list_down", mode = "n" },
+                            ["l"] = { "list_up", mode = "n" },
                         },
                     },
                     list = {
@@ -28,6 +32,15 @@ return {
                 sources = {
                     explorer = {
                         win = {
+                            input = {
+                                keys = {
+                                    ["l"] = { "list_up", mode = "n" },
+                                    ["k"] = { "list_down", mode = "n" },
+                                    ["j"] = { "explorer_close", mode = "n" },
+                                    [";"] = { "confirm", mode = "n" },
+                                    ["h"] = false,
+                                },
+                            },
                             list = {
                                 keys = {
                                     ["l"] = "list_up",
