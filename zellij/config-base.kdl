@@ -4,14 +4,15 @@
 // Everything else uses Zellij defaults.
 // =============================================================================
 
-// Theme: dracula is built-in. "alucard" is a custom theme in themes/alucard.kdl
-// switch_theme fish function updates this line via sed for live hot-swap.
-theme "dracula"
+// switch_theme fish function updates the `theme` line below for live hot-swap.
+// theme_dark/theme_light are used by zellij's set-dark-theme/set-light-theme actions.
+theme "gruvbox-dark"
 
-theme_dark "dracula"
-theme_light "alucard"
+theme_dark "gruvbox-dark"
+theme_light "gruvbox-light"
 
 // UI
+default_layout "compact"
 pane_frames true
 copy_on_select true
 scroll_buffer_size 10000
@@ -28,7 +29,7 @@ keybinds {
     shared_except "locked" {
         // Unbind Zellij's default Alt+Arrow pane movement so Neovim can use them
         unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
-        
+
         // Remap to j=left  k=down  l=up  ;=right
         bind "Alt j" { MoveFocusOrTab "Left"; }
         bind "Alt k" { MoveFocus "Down"; }
@@ -62,10 +63,10 @@ keybinds {
     }
     resize {
         unbind "h" "j" "k" "l" "H" "J" "K" "L"
-        bind "j" { Resize "Increase Left"; }
-        bind "k" { Resize "Increase Down"; }
-        bind "l" { Resize "Increase Up"; }
-        bind ";" { Resize "Increase Right"; }
+        bind "j" "Left" { Resize "Increase Left"; }
+        bind "k" "Down" { Resize "Increase Down"; }
+        bind "l" "Up" { Resize "Increase Up"; }
+        bind ";" "Right" { Resize "Increase Right"; }
         bind "J" { Resize "Decrease Left"; }
         bind "K" { Resize "Decrease Down"; }
         bind "L" { Resize "Decrease Up"; }

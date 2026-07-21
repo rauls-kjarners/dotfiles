@@ -15,18 +15,13 @@ brew-install:
     brew bundle
 
 # Install OMP plugins (node-based LSPs)
-omp-plugins:
-    omp plugin install pyright intelephense
+omp-plugins: mise-install
+    mise exec -- omp plugin install omp.nvim
 
 # Install and configure OMP skills
 omp-skills: mise-install
     rm -rf ~/.omp/skills ~/.omp/agent/skills
-    if [ -d ~/.pi/agent/skills ]; then \
-        ln -sfn ~/.pi/agent/skills ~/.omp/skills; \
-        ln -sfn ~/.pi/agent/skills ~/.omp/agent/skills; \
-    else \
-        mkdir -p ~/.omp/skills ~/.omp/agent/skills; \
-    fi
+    mkdir -p ~/.omp/skills ~/.omp/agent/skills
     mise exec -- skills add mattpocock/skills@grill-me -a pi -g -y
     mise exec -- skills add juliusbrussee/caveman@caveman -a pi -g -y
 
@@ -72,29 +67,19 @@ link: omp-skills
     LG_DIR=$(command -v lazygit >/dev/null 2>&1 && lazygit --print-config-dir || echo "$HOME/.config/lazygit"); mkdir -p "$LG_DIR"
 
     # Remove first to avoid symlink being created inside the dir if it already exists as a real directory
-    rm -rf ~/.config/nvim
-    ln -sfn {{justfile_directory()}}/nvim ~/.config/nvim
-    ln -sfn {{justfile_directory()}}/ideavim/.ideavimrc ~/.ideavimrc
     ln -sfn {{justfile_directory()}}/markdownlint/.markdownlint-cli2.yaml ~/.markdownlint-cli2.yaml
 
     # Zellij (copy config.kdl to avoid dirtying the repo on theme switch — mirrors lazygit approach)
     rm -rf ~/.config/zellij
     mkdir -p ~/.config/zellij
-    cp {{justfile_directory()}}/zellij/config.kdl ~/.config/zellij/config.kdl
+    cp {{justfile_directory()}}/zellij/config-base.kdl ~/.config/zellij/config.kdl
     ln -sfn {{justfile_directory()}}/zellij/themes ~/.config/zellij/themes
+    ln -sfn {{justfile_directory()}}/ideavim/.ideavimrc ~/.ideavimrc
 
     # Yazi keymap
     mkdir -p ~/.config/yazi
     ln -sfn {{justfile_directory()}}/yazi/keymap.toml ~/.config/yazi/keymap.toml
 
-    # Ghostty (config dir — works on both macOS and Linux)
-    rm -rf ~/.config/ghostty
-    mkdir -p ~/.config/ghostty
-    ln -sfn {{justfile_directory()}}/ghostty/config ~/.config/ghostty/config
-    ln -sfn {{justfile_directory()}}/ghostty/themes ~/.config/ghostty/themes
-    @if [ "$(uname)" = "Linux" ]; then \
-        ln -sfn {{justfile_directory()}}/ghostty/linux-local ~/.config/ghostty/linux-local; \
-    fi
 
     # Mise (global tool configuration)
     mkdir -p ~/.config/mise
@@ -109,6 +94,23 @@ link: omp-skills
     mkdir -p ~/.config/tridactyl
     rm -f ~/.config/tridactyl/tridactylrc
     ln -sf {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
+    ln -sfn {{justfile_directory()}}/tridactyl/themes ~/.config/tridactyl/themes
+    rm -rf ~/.config/wezterm ~/.config/ghostty ~/.config/phpactor ~/.config/glamour
+    ln -sfn {{justfile_directory()}}/wezterm ~/.config/wezterm
+    mkdir -p ~/.config/ghostty
+    ln -sfn {{justfile_directory()}}/ghostty/config ~/.config/ghostty/config
+    @if [ "$(uname)" = "Linux" ]; then \
+        ln -sfn {{justfile_directory()}}/ghostty/linux-local ~/.config/ghostty/linux-local; \
+    fi
+    mkdir -p ~/.config/herdr
+    ln -sfn {{justfile_directory()}}/herdr/config.toml ~/.config/herdr/config.toml
+    ln -sfn {{justfile_directory()}}/phpactor ~/.config/phpactor
+    ln -sfn {{justfile_directory()}}/glamour ~/.config/glamour
+    mkdir -p ~/.omp/agent ~/.claude ~/.gemini/config
+    ln -sfn {{justfile_directory()}}/omp/RULES.md ~/.omp/agent/RULES.md
+    ln -sfn {{justfile_directory()}}/claude/CLAUDE.md ~/.claude/CLAUDE.md
+    ln -sfn {{justfile_directory()}}/claude/agents ~/.claude/agents
+    ln -sfn {{justfile_directory()}}/antigravity/AGENTS.md ~/.gemini/config/AGENTS.md
 
     # Flatpak Tridactyl Native Messaging (Zen & Firefox)
     -if command -v flatpak >/dev/null 2>&1; then \
@@ -125,55 +127,11 @@ link: omp-skills
         done; \
     fi
 
-    # Phpactor (Global configuration)
-    mkdir -p ~/.config/phpactor
-    ln -sfn {{justfile_directory()}}/phpactor/phpactor.json ~/.config/phpactor/phpactor.json
-
-    # Tridactyl
-    mkdir -p ~/.config/tridactyl
-    rm -f ~/.config/tridactyl/tridactylrc
-    ln -sfn {{justfile_directory()}}/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc
-    rm -rf ~/.config/tridactyl/themes
-    ln -sfn {{justfile_directory()}}/tridactyl/themes ~/.config/tridactyl/themes
-    mkdir -p ~/.claude
-    rm -rf ~/.claude/agents
-    ln -sfn {{justfile_directory()}}/claude/agents ~/.claude/agents
-
-    # OMP configuration and custom agents
-    mkdir -p ~/.omp/agent
-    ln -sfn {{justfile_directory()}}/omp/RULES.md ~/.omp/agent/RULES.md
-    rm -rf ~/.omp/agent/agents
-    ln -sfn {{justfile_directory()}}/claude/agents ~/.omp/agent/agents
-
-    just bat-themes
-
     # Re-apply current OS theme if active to override default repo templates
     @fish -c 'if set -q _switch_theme_active; switch_theme "$_switch_theme_active"; end' || true
 
-# Build custom bat syntax themes (Alucard + any others in bat/themes/)
-bat-themes:
-    mkdir -p ~/.config/bat/themes
-    ln -sfn {{justfile_directory()}}/bat/themes/Alucard.tmTheme ~/.config/bat/themes/Alucard.tmTheme
-    bat cache --build
-    @echo "bat themes rebuilt — Alucard is ready for delta syntax-theme = Alucard"
-
-# Install dark-mode-notify from source (not available on Homebrew)
-dark-mode-notify-install:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if command -v dark-mode-notify &>/dev/null; then
-        echo "dark-mode-notify already installed, skipping."
-        exit 0
-    fi
-    TMP=$(mktemp -d)
-    trap 'rm -rf "$TMP"' EXIT
-    git clone --depth=1 https://github.com/bouk/dark-mode-notify.git "$TMP"
-    swift build -c release --disable-sandbox --package-path "$TMP"
-    cp "$TMP/.build/release/dark-mode-notify" "$(brew --prefix)/bin/dark-mode-notify"
-    echo "dark-mode-notify installed to $(brew --prefix)/bin/dark-mode-notify"
-
 # Update system packages and dotfile-managed tools
-update:
+update: install-agy
     @topgrade
 
 # Clean system and dotfile tool caches
@@ -181,7 +139,9 @@ clean:
     @topgrade --cleanup
 
 # Setup macOS specific tools (auto dark mode, fonts)
-mac-setup: dark-mode-notify-install
+mac-setup:
+    defaults write -g KeyRepeat -int 2
+    defaults write -g InitialKeyRepeat -int 15
     brew install --cask font-jetbrains-mono-nerd-font || true
     ln -sfn {{justfile_directory()}}/mac/com.user.dark-mode-notify.plist ~/Library/LaunchAgents/com.user.dark-mode-notify.plist
     launchctl unload ~/Library/LaunchAgents/com.user.dark-mode-notify.plist 2>/dev/null || true
@@ -230,7 +190,6 @@ linux-setup: flatpak-install distrobox-setup
     fi
 
 
-
 # OS specific setup
 os-setup:
     @if [ "$(uname)" = "Darwin" ]; then \
@@ -240,4 +199,33 @@ os-setup:
     fi
 
 # Run all setup tasks
-setup: brew-install gh-extensions mise-install link fish-plugins bat-themes omp-plugins os-setup
+setup: brew-install gh-extensions mise-install install-agy setup-nvim link fish-plugins omp-plugins os-setup
+
+# Bootstrap and symlink Neovim from external repo
+setup-nvim:
+    #!/usr/bin/env bash
+    set -e
+    if [ ! -d "{{justfile_directory()}}/../nvim-config" ]; then
+        git clone https://github.com/rauls-kjarners/nvim-config.git "{{justfile_directory()}}/../nvim-config"
+    fi
+    # Safely remove existing symlink or backup existing folder
+    if [ -L "$HOME/.config/nvim" ]; then
+        rm "$HOME/.config/nvim"
+    elif [ -d "$HOME/.config/nvim" ]; then
+        mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak"
+    fi
+    ln -s "{{justfile_directory()}}/../nvim-config" "$HOME/.config/nvim"
+
+# Wipe Neovim data and cache directories (fixes state corruption)
+clean-nvim:
+    #!/usr/bin/env bash
+    rm -rf ~/.local/share/nvim
+    rm -rf ~/.local/state/nvim
+    rm -rf ~/.cache/nvim
+
+# Install or update Antigravity CLI
+install-agy:
+    #!/usr/bin/env bash
+    if [ ! -f ~/.local/bin/agy ]; then
+        curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir ~/.local/bin
+    fi

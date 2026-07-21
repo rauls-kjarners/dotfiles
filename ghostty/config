@@ -12,10 +12,9 @@ font-thicken = true
 
 # ====================
 # Theme (native OS dark/light auto-switch)
-# "alucard" is a custom theme from ~/.config/ghostty/themes/alucard
-# "Dracula" is a Ghostty built-in theme
+# Both are Ghostty built-in themes — no custom theme files needed.
 # ====================
-theme = light:alucard,dark:Dracula
+theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark
 
 # ====================
 # Cursor
@@ -26,8 +25,8 @@ cursor-style = bar
 # Window
 # ====================
 macos-option-as-alt = left
-macos-icon-ghost-color = "#bd93f9"
-macos-icon-screen-color = "#282a36"
+macos-icon-ghost-color = "#d3869b"
+macos-icon-screen-color = "#1d2021"
 
 # ====================
 # Terminal Behavior

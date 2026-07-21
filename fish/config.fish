@@ -5,6 +5,7 @@ end
 
 # Add ~/.local/bin to PATH for external tools (php-lsp, etc)
 fish_add_path -gP ~/.local/bin
+fish_add_path -gP ~/.local/share/nvim/mason/bin
 
 # Add Homebrew's keg-only libpq to PATH (for psql / vim-dadbod)
 if test -d /opt/homebrew/opt/libpq/bin
@@ -14,6 +15,8 @@ else if test -d /usr/local/opt/libpq/bin
 else if test -d /home/linuxbrew/.linuxbrew/opt/libpq/bin
     fish_add_path -gP -a /home/linuxbrew/.linuxbrew/opt/libpq/bin
 end
+
+set -gx HOMEBREW_NO_AUTO_UPDATE 1
 
 if type -q mise
     mise activate fish | source
@@ -37,9 +40,9 @@ if status is-interactive
     # On macOS, switch_theme (below) overwrites this as a universal var (-Ux),
     # so it propagates live to open shells without a terminal restart.
     if test "$_switch_theme_active" = light
-        set -gx BAT_THEME Alucard
+        set -gx BAT_THEME gruvbox-light
     else
-        set -gx BAT_THEME Dracula
+        set -gx BAT_THEME gruvbox-dark
     end
 
     # Apply theme matching current OS dark/light mode.
@@ -78,9 +81,8 @@ if status is-interactive
     alias lzg="lazygit"
     alias lzd="lazydocker"
     alias lzs="lazysql"
-    alias jt1="jiratui ui -j 1 --search-on-startup"
-    alias jt2="jiratui ui -j 2 --search-on-startup"
-    alias jt3="jiratui ui -j 3 --search-on-startup"
+    alias dark="switch_theme dark"
+    alias light="switch_theme light"
 
     function y --description "Launch yazi and cd into the last directory on exit"
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
@@ -118,4 +120,12 @@ if status is-interactive
         direnv hook fish | source
     end
 
+end
+
+# ====================
+# Local Untracked Config
+# ====================
+# Create ~/.config/fish/local.fish on the local machine for private env vars/aliases
+if test -f ~/.config/fish/local.fish
+    source ~/.config/fish/local.fish
 end

@@ -1,6 +1,8 @@
 # Dotfiles
 
-Cross-platform dotfiles for Linux and macOS, featuring a unified Dracula (dark) / Alucard (light) theme that auto-switches with the OS, and ergonomic keyboard mappings (`j k l ;` instead of `h j k l`).
+Cross-platform dotfiles for Linux and macOS, featuring a unified Gruvbox Dark / Gruvbox Light theme that auto-switches with the OS, and ergonomic keyboard mappings (`j k l ;` instead of `h j k l`).
+
+This repository utilizes a native OS approach, using **Homebrew** and **Mise**, replacing isolated package managers like Nix to ensure perfect compatibility with enterprise EDR/security policies.
 
 ## Prerequisites
 
@@ -13,7 +15,7 @@ Cross-platform dotfiles for Linux and macOS, featuring a unified Dracula (dark) 
 
 ## Installation
 
-To install all tools, link all configurations, and set up the environment, run:
+To install all tools, link all configurations, and set up the environment natively, run:
 
 ```sh
 just setup
@@ -21,11 +23,8 @@ just setup
 
 ### Post-Install / First Run
 
-1. **Neovim setup**: Open `nvim`.
-   - `Lazy.nvim` will automatically download and install plugins.
-   - `Mason.nvim` will install formatters and LSPs.
-   - Run `:checkhealth` to verify everything is wired up.
-2. **Browser (Tridactyl)**: Tridactyl configuration cannot be fully automated. Manually source `~/.config/tridactyl/tridactylrc` or import it via the extension options.
+1. **Neovim setup**: `just setup` clones and links the external Neovim config automatically. Re-run `just setup-nvim` at any time to update it.
+2. **Browser (Tridactyl)**: Run `:installnative` in your browser and execute the downloaded script to enable native messaging. Then, `source ~/.config/tridactyl/tridactylrc`.
 
 ## Core Tools & Keybinds
 
@@ -47,28 +46,38 @@ Movement keys mirror Neovim: `j=left`, `k=down`, `l=up`, `;=right`.
 Brings Neovim-like keyboard navigation to Zen Browser/Firefox.
 
 - **Movement**: `j=left`, `k=down`, `l=up`, `;=right` for ergonomic home-row usage.
-- **External Editor**: `<C-i>` in any text box opens a Ghostty window running Neovim to write web comments natively.
-- **Hints**: Bound to left-hand keys (`sadfqewcxz`) so your right hand never leaves movement keys.
+- **External Editor**: `<C-i>` in any text box opens a **Wezterm** window running Neovim to write web comments natively.
+- **Hints**: Bound to left-hand keys (`sadfqewcxz`) so the right hand never leaves movement keys.
 
 ## Common Aliases
 
 - `lzg`: Launches `lazygit`
 - `lzd`: Launches `lazydocker`
 - `lzs`: Launches `lazysql`
-- `y`: Launches `yazi` and automatically changes your directory (`cd`) when you exit.
+- `y`: Launches `yazi` and automatically `cd`s to the last directory on exit.
+- `dark` / `light`: Manually force a theme switch (`switch_theme dark|light`).
+- `update`: Calls `topgrade` directly (brew, mise, fisher, etc.).
 
-## Individual Commands
+## Unified System Automation (Justfile)
 
-Run any step independently if needed:
+This repository uses a unified `justfile` to provide a seamless setup and update experience:
 
-| Command                         | Description                                        |
-| ------------------------------- | -------------------------------------------------- |
-| `just brew-install`             | Install Homebrew packages                          |
-| `just link`                     | Create/refresh all config symlinks                 |
-| `just update`                   | Update entire system and all tools via `topgrade`  |
-| `just clean`                    | Clean up system and tool caches via `topgrade`     |
-| `just bat-themes`               | Build the custom Alucard bat/delta syntax theme    |
-| `just fish-plugins`             | Update Fish shell plugins via fisher               |
-| `just dark-mode-notify-install` | Compile and install `dark-mode-notify` from source |
-| `just mac-setup`                | Re-install the macOS auto dark-mode daemon         |
-| `just linux-setup`              | Re-install the Linux auto dark-mode service        |
+| Command            | Description                                                                 |
+| ------------------ | --------------------------------------------------------------------------- |
+| `just update`      | The daily driver: topgrade (brew, mise, fisher…) + updates Antigravity CLI. |
+| `just clean`       | Cleans up Homebrew caches.                                                  |
+| `just setup-nvim`  | Bootstraps Neovim by cloning the external config repo and linking it.       |
+| `just clean-nvim`  | Wipes Neovim data/cache directories (`~/.local/share/nvim`, etc.).          |
+| `just install-agy` | Native auto-installer for the Antigravity CLI wrapper.                      |
+| `just link`        | Safely creates/refreshes all configuration symlinks.                        |
+| `just mac-setup`   | Installs JetBrains Mono, configures `dark-notify`, and sets macOS defaults. |
+| `just linux-setup` | Sets up flatpaks, distrobox, systemd theme monitor, and fonts.              |
+
+## Theme Switching
+
+This setup uses a dynamic theme switching architecture:
+
+1. **Terminal GUI**: WezTerm and Ghostty query the OS for Dark/Light mode and switch automatically using built-in Gruvbox Material themes.
+2. **CLI Tools (Zellij, Bat, Btop, K9s, lazygit, yazi…)**: The `switch_theme dark|light` fish function rewrites all CLI configs in place with native Gruvbox Material themes.
+   - **macOS**: `dark-notify` runs as a `launchd` user agent; it calls `switch_theme <mode>` on startup and on every Appearance change.
+   - **Linux**: A `systemd` user service watches for theme changes and calls `switch_theme`.

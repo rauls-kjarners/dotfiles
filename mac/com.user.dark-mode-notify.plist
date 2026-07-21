@@ -13,10 +13,11 @@
     <string>/tmp/dark-mode-notify-stdout.log</string>
     <key>ProgramArguments</key>
     <array>
-       <string>/opt/homebrew/bin/dark-mode-notify</string>
-       <string>/opt/homebrew/bin/fish</string>
+       <string>/opt/homebrew/bin/dark-notify</string>
        <string>-c</string>
-       <string>source ~/Projects/dotfiles/fish/functions/switch_theme.fish; if test "$DARKMODE" = 1; switch_theme dark; else; switch_theme light; end</string>
+       <string>/opt/homebrew/bin/fish -c 'source ~/Projects/dotfiles/fish/functions/switch_theme.fish; switch_theme $argv[1]'</string>
     </array>
+    <key>RunAtLoad</key>
+    <true/>
 </dict>
 </plist>

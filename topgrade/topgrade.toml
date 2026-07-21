@@ -1,6 +1,17 @@
 [misc]
 assume_yes = true
-disable = ["containers", "waydroid", "toolbx", "antigravity", "mas", "pnpm", "helm", "julia"] # Prevents blind image updates, stops waydroid panic, toolbx conflict, antigravity hang, mas requires sudo, and others fail due to lack of setup
+disable = [
+    "containers", "waydroid", "toolbx",           # blind image updates / distro conflicts
+    "antigravity", "pi",                          # hangs / managed via install-agy; pi managed by mise
+    "mas",                                        # requires sudo
+    "pnpm", "helm", "julia",                      # not in use
+    "vim",                                        # nvim-config is an external repo; plugins managed there
+    "pip3", "composer",                           # per-project, not global
+    "rcm",                                        # not used (justfile-based dotfiles)
+    "aqua", "uv", "skills",                       # not used / managed by mise
+    "node", "yarn", "bun_packages",               # node/bun via mise; global package updates unexpected
+    "vscode", "microsoft_office",                 # auto-update natively; CLI steps redundant/noisy
+]
 [linux]
 # Enable rpm-ostree updates (immutable Linux distros)
 rpm_ostree = true

@@ -1,14 +1,28 @@
+[settings]
+minimum_release_age_excludes = [
+    "github:can1357/oh-my-pi"
+]
+
 [tools]
-node = "lts"
+# ====================
+# Core Languages & Runtimes
+# ====================
 bun = "latest"
-rust = "latest"
 go = "latest"
-"npm:skills" = "latest"
-"github:can1357/oh-my-pi" = "latest"
-"go:golang.org/x/tools/gopls" = "latest"
+node = "lts"
+python = "latest"
+rust = "latest"
+uv = "latest"
+
+# ====================
+# Language Servers & Dev Tools
+# ====================
 "github:phpactor/phpactor" = "latest"
+"go:golang.org/x/tools/gopls" = "latest"
 # "github:jorgsowa/php-lsp" = "latest"
 
-[settings]
-minimum_release_age_excludes = ["github:can1357/oh-my-pi"]
-
+# ====================
+# AI & Custom Agents
+# ====================
+"github:can1357/oh-my-pi" = "latest"
+"npm:skills" = "latest"
