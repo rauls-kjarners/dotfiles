@@ -13,17 +13,17 @@ config.scrollback_lines = 10000
 local appearance = wezterm.gui and wezterm.gui.get_appearance() or "Dark"
 
 if appearance:find("Dark") then
-    config.color_scheme = "GruvboxDarkHard"
-    config.colors = {
-        background = "#1d2021",
-        foreground = "#e2cca9",
-    }
+	config.color_scheme = "GruvboxDarkHard"
+	config.colors = {
+		background = "#1d2021",
+		foreground = "#e2cca9",
+	}
 else
-    config.color_scheme = "GruvboxLight"
-    config.colors = {
-        background = "#f9f5d7",
-        foreground = "#514036",
-    }
+	config.color_scheme = "GruvboxLight"
+	config.colors = {
+		background = "#f9f5d7",
+		foreground = "#514036",
+	}
 end
 
 -- Window appearance
@@ -35,48 +35,48 @@ config.enable_tab_bar = false
 config.native_macos_fullscreen_mode = false
 
 config.keys = {
-    {
-        key = "Enter",
-        mods = "SHIFT",
-        action = wezterm.action.SendString("\x1b[13;2u"),
-    },
-    {
-        key = ";",
-        mods = "CTRL",
-        action = wezterm.action.SendString("\x1b[59;5u"),
-    },
-    {
-        key = "Enter",
-        mods = "ALT",
-        action = wezterm.action.ToggleFullScreen,
-    },
+	{
+		key = "Enter",
+		mods = "SHIFT",
+		action = wezterm.action.SendString("\x1b[13;2u"),
+	},
+	{
+		key = ";",
+		mods = "CTRL",
+		action = wezterm.action.SendString("\x1b[59;5u"),
+	},
+	{
+		key = "Enter",
+		mods = "ALT",
+		action = wezterm.action.ToggleFullScreen,
+	},
 }
 
 -- macOS specific bindings (Option as Alt)
 if wezterm.target_triple == "aarch64-apple-darwin" or wezterm.target_triple == "x86_64-apple-darwin" then
-    config.send_composed_key_when_left_alt_is_pressed = false
-    config.send_composed_key_when_right_alt_is_pressed = false
-    -- macOS: Cmd+Backspace to delete line (Ctrl+U)
-    table.insert(config.keys, {
-        key = "Backspace",
-        mods = "CMD",
-        action = wezterm.action.SendString("\x15"),
-    })
+	config.send_composed_key_when_left_alt_is_pressed = false
+	config.send_composed_key_when_right_alt_is_pressed = false
+	-- macOS: Cmd+Backspace to delete line (Ctrl+U)
+	table.insert(config.keys, {
+		key = "Backspace",
+		mods = "CMD",
+		action = wezterm.action.SendString("\x15"),
+	})
 end
 
 config.mouse_bindings = {
-    -- 1. Right-click to paste from the system clipboard
-    {
-        event = { Down = { streak = 1, button = "Right" } },
-        mods = "NONE",
-        action = wezterm.action.PasteFrom("Clipboard"),
-    },
-    -- 2. Automatically copy to system clipboard when releasing the left mouse button after selecting text
-    {
-        event = { Up = { streak = 1, button = "Left" } },
-        mods = "NONE",
-        action = wezterm.action.CompleteSelection("ClipboardAndPrimarySelection"),
-    },
+	-- 1. Right-click to paste from the system clipboard
+	{
+		event = { Down = { streak = 1, button = "Right" } },
+		mods = "NONE",
+		action = wezterm.action.PasteFrom("Clipboard"),
+	},
+	-- 2. Automatically copy to system clipboard when releasing the left mouse button after selecting text
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "NONE",
+		action = wezterm.action.CompleteSelection("ClipboardAndPrimarySelection"),
+	},
 }
 
 return config

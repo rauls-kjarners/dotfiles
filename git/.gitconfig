@@ -72,3 +72,7 @@
 
 [merge]
     conflictStyle = zdiff3
+
+[include]
+    # Machine-specific settings and work overrides
+    path = ~/.gitconfig.local

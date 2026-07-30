@@ -108,6 +108,8 @@ link: omp-skills
     ln -sfn {{justfile_directory()}}/glamour ~/.config/glamour
     mkdir -p ~/.omp/agent ~/.claude ~/.gemini/config
     ln -sfn {{justfile_directory()}}/omp/RULES.md ~/.omp/agent/RULES.md
+    mkdir -p ~/.omp/agent/extensions
+    ln -sfn {{justfile_directory()}}/omp/hooks/pre/git-rule.ts ~/.omp/agent/extensions/git-rule.ts
     ln -sfn {{justfile_directory()}}/claude/CLAUDE.md ~/.claude/CLAUDE.md
     ln -sfn {{justfile_directory()}}/claude/agents ~/.claude/agents
     ln -sfn {{justfile_directory()}}/antigravity/AGENTS.md ~/.gemini/config/AGENTS.md
