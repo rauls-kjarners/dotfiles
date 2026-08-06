@@ -1,10 +1,10 @@
-# Dotfiles
+# Dotfiles 🚀
 
-Cross-platform dotfiles for Linux and macOS, featuring a unified Gruvbox Dark / Gruvbox Light theme that auto-switches with the OS, and ergonomic keyboard mappings (`j k l ;` instead of `h j k l`).
+Cross-platform dotfiles for Linux and macOS. Features a unified Gruvbox Dark / Light theme that auto-switches with the OS, and ergonomic keyboard mappings (`j k l ;` instead of `h j k l`).
 
-This repository utilizes a native OS approach, using **Homebrew** and **Mise**, replacing isolated package managers like Nix to ensure perfect compatibility with enterprise EDR/security policies.
+Uses **Homebrew** and **Mise** for native OS package management, ensuring perfect compatibility with enterprise EDR/security policies.
 
-## Prerequisites
+## 📦 Prerequisites
 
 1. Install [Homebrew](https://brew.sh/)
 2. Install the `just` command runner:
@@ -13,7 +13,7 @@ This repository utilizes a native OS approach, using **Homebrew** and **Mise**, 
    brew install just
    ```
 
-## Installation
+## 🚀 Installation
 
 To install all tools, link all configurations, and set up the environment natively, run:
 
@@ -21,46 +21,52 @@ To install all tools, link all configurations, and set up the environment native
 just setup
 ```
 
-### Post-Install / First Run
+### 📝 Post-Install / First Run
 
-1. **Neovim setup**: `just setup` clones and links the external Neovim config automatically. Re-run `just setup-nvim` at any time to update it.
-2. **Browser (Tridactyl)**: Run `:installnative` in your browser and execute the downloaded script to enable native messaging. Then, `source ~/.config/tridactyl/tridactylrc`.
+1. **Neovim**: `just setup` clones and links the external Neovim config automatically. Re-run `just setup-nvim` to update.
+2. **Browser (Tridactyl)**: Run `:installnative` in the browser and execute the downloaded script to enable native messaging. Then run `source ~/.config/tridactyl/tridactylrc`.
 
-## Core Tools & Keybinds
+## 📂 Architecture & Core Tools
 
-### Zellij (Multiplexer)
+### 🖥️ Herdr (Multiplexer)
 
-Pre-configured for ergonomic use and seamless Neovim integration.
+Primary workspace multiplexer, pre-configured for ergonomic use and seamless integration. Zellij remains configured as a fallback/backup.
 Movement keys mirror Neovim: `j=left`, `k=down`, `l=up`, `;=right`.
 
-| Keybind             | Action                                               |
-| ------------------- | ---------------------------------------------------- |
-| `Alt + j/k/l/;`     | Navigate panes (seamlessly across Zellij and Neovim) |
-| `Alt + n`           | New pane                                             |
-| `Ctrl+p` then `d/D` | Split pane down / right                              |
-| `Ctrl+p` then `x`   | Close pane                                           |
-| `Ctrl+s` then `d`   | Detach session                                       |
+| Keybind                | Action           |
+| ---------------------- | ---------------- |
+| `Alt + j/k/l/;`        | Navigate panes   |
+| `Prefix+Shift+j/k/l/;` | Swap panes       |
+| `Alt + 1..9`           | Switch workspace |
 
-### Browser (Tridactyl)
+### 🌐 Browser Navigation (Tridactyl & Vimium C)
 
-Brings Neovim-like keyboard navigation to Zen Browser/Firefox.
+Brings Neovim-like keyboard navigation to web browsers.
 
 - **Movement**: `j=left`, `k=down`, `l=up`, `;=right` for ergonomic home-row usage.
-- **External Editor**: `<C-i>` in any text box opens a **Wezterm** window running Neovim to write web comments natively.
-- **Hints**: Bound to left-hand keys (`sadfqewcxz`) so the right hand never leaves movement keys.
+- **Tridactyl** (Zen Browser / Firefox):
+  - **External Editor**: `<C-i>` in any text box opens a **Wezterm** window running Neovim to write web comments natively.
+  - **Hints**: Bound to left-hand keys (`sadfqewcxz`) so the right hand never leaves movement keys.
+- **Vimium C** (Chromium): Configured with the same custom mappings and hint logic.
 
-## Common Aliases
+### 💻 IDE (IdeaVim)
+
+Provides JetBrains IDEs with the custom `j k l ;` motion layout, matching the Neovim and Herdr workflows. Integrates plugins like Flash, Dial, and matches LazyVim keybinds for native IDE actions.
+
+### 🔗 Common Aliases
 
 - `lzg`: Launches `lazygit`
 - `lzd`: Launches `lazydocker`
 - `lzs`: Launches `lazysql`
 - `y`: Launches `yazi` and automatically `cd`s to the last directory on exit.
+- `zj` / `zjc`: Attach to main Zellij session (`zjc` uses compact mode).
+- `box`: Alias for `distrobox`.
 - `dark` / `light`: Manually force a theme switch (`switch_theme dark|light`).
-- `update`: Calls `topgrade` directly (brew, mise, fisher, etc.).
+- `update`: Calls `topgrade` directly to update all system packages and dotfile-managed tools.
 
-## Unified System Automation (Justfile)
+## 🤖 Unified System Automation (Justfile)
 
-This repository uses a unified `justfile` to provide a seamless setup and update experience:
+Uses a unified `justfile` to provide a seamless setup and update experience:
 
 | Command            | Description                                                                 |
 | ------------------ | --------------------------------------------------------------------------- |
@@ -71,13 +77,12 @@ This repository uses a unified `justfile` to provide a seamless setup and update
 | `just install-agy` | Native auto-installer for the Antigravity CLI wrapper.                      |
 | `just link`        | Safely creates/refreshes all configuration symlinks.                        |
 | `just mac-setup`   | Installs JetBrains Mono, configures `dark-notify`, and sets macOS defaults. |
-| `just linux-setup` | Sets up flatpaks, distrobox, systemd theme monitor, and fonts.              |
 
-## Theme Switching
+## 🖥️ Terminals & Theme Switching
 
-This setup uses a dynamic theme switching architecture:
+Dynamic theme switching architecture:
 
-1. **Terminal GUI**: WezTerm and Ghostty query the OS for Dark/Light mode and switch automatically using built-in Gruvbox Material themes.
+1. **Terminal GUI**: WezTerm, Ghostty, and Herdr query the OS for Dark/Light mode and switch automatically using built-in Gruvbox Material themes.
 2. **CLI Tools (Zellij, Bat, Btop, K9s, lazygit, yazi…)**: The `switch_theme dark|light` fish function rewrites all CLI configs in place with native Gruvbox Material themes.
    - **macOS**: `dark-notify` runs as a `launchd` user agent; it calls `switch_theme <mode>` on startup and on every Appearance change.
    - **Linux**: A `systemd` user service watches for theme changes and calls `switch_theme`.
