@@ -1,11 +1,9 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
--- Font configuration
 config.font = wezterm.font("JetBrainsMono NF Medium")
 config.font_size = 14.0
 
--- Basic aesthetics and cursor
 config.default_cursor_style = "BlinkingBar"
 config.scrollback_lines = 10000
 
@@ -26,13 +24,23 @@ else
 	}
 end
 
--- Window appearance
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 1.0
 config.enable_tab_bar = false
 
--- Keybinds
 config.native_macos_fullscreen_mode = false
+
+local maximize_state = {}
+wezterm.on("toggle-maximize", function(window, _pane)
+	local id = window:window_id()
+	if maximize_state[id] then
+		window:restore()
+		maximize_state[id] = false
+	else
+		window:maximize()
+		maximize_state[id] = true
+	end
+end)
 
 config.keys = {
 	{
@@ -48,7 +56,7 @@ config.keys = {
 	{
 		key = "Enter",
 		mods = "ALT",
-		action = wezterm.action.ToggleFullScreen,
+		action = wezterm.action.EmitEvent("toggle-maximize"),
 	},
 }
 
