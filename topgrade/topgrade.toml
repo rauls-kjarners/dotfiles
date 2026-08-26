@@ -3,7 +3,7 @@ assume_yes = true
 disable = [
     "containers", "waydroid", "toolbx",           # blind image updates / distro conflicts
     "antigravity", "pi",                          # hangs / managed via install-agy; pi managed by mise
-    "mas",                                        # requires sudo
+    "mas", "system",                              # requires sudo; macOS software update
     "pnpm", "helm", "julia",                      # not in use
     "vim",                                        # nvim-config is an external repo; plugins managed there
     "pip3", "composer",                           # per-project, not global
