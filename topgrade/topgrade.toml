@@ -12,6 +12,10 @@ disable = [
     "node", "yarn", "bun_packages",               # node/bun via mise; global package updates unexpected
     "vscode", "microsoft_office",                 # auto-update natively; CLI steps redundant/noisy
 ]
+
+[brew]
+greedy_latest = true                              # wezterm@nightly is version :latest; skipped otherwise
+
 [linux]
 # Enable rpm-ostree updates (immutable Linux distros)
 rpm_ostree = true
