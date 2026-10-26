@@ -82,7 +82,7 @@ Uses a unified `justfile` to provide a seamless setup and update experience:
 
 Dynamic theme switching architecture:
 
-1. **Terminal GUI**: WezTerm, Ghostty, and Herdr query the OS for Dark/Light mode and switch automatically using built-in Gruvbox Material themes.
+1. **Terminal GUI**: WezTerm, Ghostty, and Herdr query the OS for Dark/Light mode and switch automatically using built-in original Gruvbox themes.
 2. **CLI Tools (Zellij, Bat, Btop, K9s, lazygit, yazi…)**: The `switch_theme dark|light` fish function rewrites all CLI configs in place with native Gruvbox Material themes.
    - **macOS**: `dark-notify` runs as a `launchd` user agent; it calls `switch_theme <mode>` on startup and on every Appearance change.
    - **Linux**: A `systemd` user service watches for theme changes and calls `switch_theme`.

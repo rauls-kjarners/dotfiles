@@ -9,29 +9,38 @@ font-family = JetBrains Mono Nerd Font
 font-size = 14
 adjust-cell-height = 25%
 font-thicken = true
+# font-style = Medium
 
 # ====================
 # Theme (native OS dark/light auto-switch)
 # Both are Ghostty built-in themes — no custom theme files needed.
 # ====================
-theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark
+theme = light:Gruvbox Light Hard,dark:Gruvbox Dark Hard
 
 # ====================
 # Cursor
 # ====================
 cursor-style = bar
+cursor-style-blink = true
+shell-integration-features = no-cursor
 
 # ====================
 # Window
 # ====================
-macos-option-as-alt = left
+macos-option-as-alt = true
+macos-titlebar-style = hidden
+macos-non-native-fullscreen = true
+window-padding-x = 4
+window-padding-balance = true
 macos-icon-ghost-color = "#d3869b"
 macos-icon-screen-color = "#1d2021"
 
 # ====================
 # Terminal Behavior
 # ====================
-scrollback-limit = 10000
+right-click-action = paste
+copy-on-select = clipboard
+mouse-scroll-multiplier = precision:0.5,discrete:0.8
 
 # Load Linux-specific keybinds (ignored if file is missing, like on macOS)
 config-file = ?linux-local
