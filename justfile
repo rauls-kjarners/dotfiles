@@ -111,7 +111,9 @@ link: omp-skills
     mkdir -p ~/.omp/agent/extensions
     ln -sfn {{justfile_directory()}}/omp/hooks/pre/git-rule.ts ~/.omp/agent/extensions/git-rule.ts
     ln -sfn {{justfile_directory()}}/claude/CLAUDE.md ~/.claude/CLAUDE.md
-    ln -sfn {{justfile_directory()}}/claude/agents ~/.claude/agents
+    ln -sfn {{justfile_directory()}}/claude/settings.json ~/.claude/settings.json
+    ln -sfn {{justfile_directory()}}/claude/hooks ~/.claude/hooks
+    chmod +x {{justfile_directory()}}/claude/hooks/pre/git-rule.sh
     ln -sfn {{justfile_directory()}}/antigravity/AGENTS.md ~/.gemini/config/AGENTS.md
 
     # Flatpak Tridactyl Native Messaging (Zen & Firefox)
