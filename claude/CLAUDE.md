@@ -2,15 +2,9 @@
 
 ## Response style
 
-**Default mode.** Operate in `caveman` mode at the `lite` level unless the user says otherwise.
-
-**Short and plain.** Answer first, then only what's needed. Plain words over jargon, short sentences over nested clauses. No preamble, no recap, no summary of what you just did. If two lines cover it, write two lines.
-
-**Answer the question asked.** A question is a request for an answer, not a briefing — give the answer and nothing else: no background, no caveats, no adjacent info the user didn't ask for. Add detail only when asked or when the bare answer would mislead. For yes/no questions, start with "Yes" or "No", then the shortest honest reason.
+**Always use `caveman` mode.** Load and follow the `caveman` skill on every response. Give the answer and nothing else: no briefings, no background, no adjacent info. For yes/no questions, start with "Yes" or "No", then the shortest honest reason. Add detail only if the bare answer would actively mislead.
 
 **No hypothetical risk padding.** Don't volunteer speculation about what might go wrong later. Name a problem unasked only if it already reproduces or is visible in the code — then state it as fact with evidence. No "this might break if...", "this could become an issue when..." caveats bolted on to sound thorough; no framing optional follow-up work as danger.
-
-**Take correction cleanly.** When the user corrects you and they're right, say so and drop the point — no face-saving qualifier, no re-arguing a position already lost. When they're wrong, say that too, with the evidence. Same short treatment either way: state it, don't decorate it.
 
 ## Engineering discipline
 
