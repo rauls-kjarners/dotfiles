@@ -8,7 +8,7 @@ disable = [
     "vim",                                        # nvim-config is an external repo; plugins managed there
     "pip3", "composer",                           # per-project, not global
     "rcm",                                        # not used (justfile-based dotfiles)
-    "aqua", "uv", "skills",                       # not used / managed by mise
+    "aqua", "uv", "skills",                       # not used; skills CLI via mise, skill content via custom command below
     "node", "yarn", "bun_packages",               # node/bun via mise; global package updates unexpected
     "vscode", "microsoft_office",                 # auto-update natively; CLI steps redundant/noisy
     "brew_cask",                                  # replaced by custom command below (skips VS Code sudo prompt)
@@ -16,6 +16,7 @@ disable = [
 
 [commands]
 "Brew casks" = "brew outdated --cask --greedy-latest --quiet | grep -vx visual-studio-code | xargs -r brew upgrade --cask --greedy-latest"
+"Agent skills" = "mise exec -- skills update -g -y"
 
 [brew]
 greedy_latest = true                              # wezterm@nightly is version :latest; skipped otherwise
