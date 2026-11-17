@@ -63,8 +63,8 @@ link: omp-skills
     touch ~/.gitignore_global.local
     cat {{justfile_directory()}}/git/gitignore_global ~/.gitignore_global.local > ~/.gitignore_global
     
-    # Setup lazygit config dir at the OS-correct path (don't symlink — generated per theme switch)
-    LG_DIR=$(command -v lazygit >/dev/null 2>&1 && lazygit --print-config-dir || echo "$HOME/.config/lazygit"); mkdir -p "$LG_DIR"
+    # Symlink lazygit config at the OS-correct path
+    LG_DIR=$(command -v lazygit >/dev/null 2>&1 && lazygit --print-config-dir || echo "$HOME/.config/lazygit"); mkdir -p "$LG_DIR" && ln -sfn {{justfile_directory()}}/lazygit/config.yml "$LG_DIR/config.yml"
 
     # Remove first to avoid symlink being created inside the dir if it already exists as a real directory
     ln -sfn {{justfile_directory()}}/markdownlint/.markdownlint-cli2.yaml ~/.markdownlint-cli2.yaml
